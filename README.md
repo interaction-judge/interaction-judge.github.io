@@ -12,10 +12,10 @@ Open **http://localhost:8000**. The preview command uses Python 3. Any static we
 
 ## Files
 
-- `index.html`: authors, abstract, key results, datasets, and citation.
+- `index.html`: authors, abstract, four core results with figures, datasets, and citation.
 - `style.css`: typography and responsive layout.
 - `assets/interaction-as-a-judge.pdf`: the paper.
-- `assets/figures/overview.png`: the original framework figure.
+- `assets/figures/`: the original framework and four result figures from the paper.
 - `assets/citation.bib`: downloadable BibTeX.
 
 Research content comes from the sibling `Interaction-as-a-Judge-Arxiv-` manuscript. The author affiliations and downloadable PDF match the October 12, 2026 version. See [SOURCES.md](SOURCES.md) for provenance.

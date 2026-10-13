@@ -60,11 +60,6 @@
         </nav>
       </header>
 
-      <p class="summary">
-        Computer-use agents evaluate applications by interacting with them. The
-        resulting traces improve both evaluation and generation.
-      </p>
-
       <figure>
         <a
           href="assets/figures/overview.png"
@@ -116,44 +111,123 @@
         </p>
       </section>
 
-      <section aria-labelledby="results-title">
-        <h2 id="results-title">Key results</h2>
-        <table>
-          <caption class="visually-hidden">
-            Comparison of code-only evaluation and Interaction-as-a-Judge
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Task</th>
-              <th scope="col">Code only</th>
-              <th scope="col">With interaction</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Human preference alignment</th>
-              <td>65.6%</td>
-              <td><strong>69.1%</strong></td>
-            </tr>
-            <tr>
-              <th scope="row">Requirement verification</th>
-              <td>77.0%</td>
-              <td><strong>81.6%</strong></td>
-            </tr>
-            <tr>
-              <th scope="row">Repair within five attempts</th>
-              <td>55.4%</td>
-              <td><strong>75.5%</strong></td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          Preference results use Gemini 3 Flash. Verification uses GPT 5.6 Sol;
-          repairs are made by GPT 5.6 Luna and evaluated by Sol with
-          interaction. Preference gains depend on the judge: GPT 5.6 Luna showed
-          no significant improvement. See the paper for full comparisons and
-          training results.
+      <section aria-labelledby="preferences-title">
+        <h2 id="preferences-title">Human preferences</h2>
+        <p>
+          With iterative computer use, Gemini 3 Flash’s agreement with human
+          preferences improves from <strong>65.6% to 69.1%</strong>. A trained
+          reward model reaches <strong>70.8%</strong>, outperforming the
+          off-the-shelf LLM judges. Interaction traces alone also support
+          reward-model training without access to code.
         </p>
+        <figure>
+          <a
+            href="assets/figures/human-preferences.png"
+            aria-label="View the full-size human preference results"
+          >
+            <img
+              src="assets/figures/human-preferences.png"
+              width="2400"
+              height="522"
+              loading="lazy"
+              alt="Preference accuracy for code, code plus screenshot, and three interaction strategies. Iterative interaction reaches 69.1% with Gemini 3 Flash, 70.8% with a full-code reward model, and 69.0% with an interaction-only reward model."
+            />
+          </a>
+          <figcaption>
+            Human preference alignment across LLM judges and reward models.
+            GPT 5.6 Luna shows no statistically significant improvement from
+            interaction.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="correctness-title">
+        <h2 id="correctness-title">Correctness verification</h2>
+        <p>
+          With GPT 5.6 Sol, interaction improves balanced requirement-verification
+          accuracy from <strong>77.0% to 81.6%</strong>. The largest gain comes
+          from identifying broken requirements: <strong>63.0% to 71.1%</strong>.
+          Verification improves as the computer-use model becomes more capable.
+        </p>
+        <figure>
+          <a
+            href="assets/figures/correctness-verification.png"
+            aria-label="View the full-size correctness verification results"
+          >
+            <img
+              src="assets/figures/correctness-verification.png"
+              width="2400"
+              height="655"
+              loading="lazy"
+              alt="Requirement verification and discovery across GPT 5.6 Luna, Terra, and Sol. Interaction improves verification for every model; broken-requirement accuracy rises from 65.2% with Luna to 71.1% with Sol. Discovery recall remains low for both approaches."
+            />
+          </a>
+          <figcaption>
+            Verification of broken and working requirements, their unweighted
+            average, and discovery of broken requirements. Requirement discovery
+            remains challenging for both approaches.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="inference-title">
+        <h2 id="inference-title">Inference-time scaling</h2>
+        <p>
+          Interaction-based self-feedback repairs <strong>75.5%</strong> of
+          initially broken requirements within five attempts, compared with
+          <strong>55.4%</strong> for code-only self-feedback. The improvement
+          persists under both interaction-based and code-only evaluation, with a
+          smaller gap between self-reported and externally evaluated success.
+        </p>
+        <figure>
+          <a
+            href="assets/figures/inference-time-scaling.png"
+            aria-label="View the full-size inference-time scaling results"
+          >
+            <img
+              src="assets/figures/inference-time-scaling.png"
+              width="2400"
+              height="622"
+              loading="lazy"
+              alt="Repair success over five iterations using code-only or interaction-based self-feedback. Sol’s interaction evaluation finds 75.5% repaired with interaction versus 55.4% with code only; its code evaluation finds 77.4% versus 63.8%. Interaction also reduces the self-verification gap."
+            />
+          </a>
+          <figcaption>
+            GPT 5.6 Luna repairs and self-verifies; GPT 5.6 Sol evaluates the
+            repairs. The 75.5% and 55.4% results use Sol’s interaction-based
+            evaluation.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="training-title">
+        <h2 id="training-title">Training</h2>
+        <p>
+          Reinforcement learning with an interaction-only reward model improves
+          Qwen-3.5-9B’s win rate over the base model by
+          <strong>6.7 percentage points</strong>. Compared with a code-only
+          reward signal, it generates <strong>35.7% less code</strong> and
+          increases build success from <strong>81.3% to 88.5%</strong>.
+        </p>
+        <figure>
+          <a
+            href="assets/figures/training.png"
+            aria-label="View the full-size training results"
+          >
+            <img
+              src="assets/figures/training.png"
+              width="2400"
+              height="464"
+              loading="lazy"
+              alt="Training curves compare code-only, interaction-only, and build-only reward signals. Interaction-based training improves build success and reduces generated code compared with code-only rewards, while an auto-rubrics judge measures a 6.72 percentage-point win-rate gain over the base model."
+            />
+          </a>
+          <figcaption>
+            Reward scores, build success, code length, and quality after training.
+            Win rates use an auto-rubrics judge on successful builds and renders.
+            Training covers six non-game categories.
+          </figcaption>
+        </figure>
       </section>
 
       <section aria-labelledby="datasets-title">

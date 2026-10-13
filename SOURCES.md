@@ -20,6 +20,10 @@ Wayne Chi: 1, 2; I-Hung Hsu: 2; Li Chen: 2; Wei-Lin Chiang: 2; Ion Stoica: 2, 3;
 | Preference and correctness results     | `sections/04_setting1_arena.tex`      |
 | Repairs and reinforcement learning     | `sections/05_setting2_complaints.tex` |
 | Framework figure                       | `figures/fig_main.pdf`                |
+| Human preference figure                | `figures/webdev_overall_comparison.pdf` |
+| Correctness verification figure         | `figures/correctness_scaling.pdf`     |
+| Inference-time scaling figure           | `figures/iterative_solving_v3.pdf`    |
+| Training figure                         | `figures/training_comparison.pdf`    |
 
 ## Result context
 
@@ -30,6 +34,6 @@ Wayne Chi: 1, 2; I-Hung Hsu: 2; Li Chen: 2; Wei-Lin Chiang: 2; Ion Stoica: 2, 3;
 - Training: **6.7 percentage-point** win-rate gain over the base model, conditional on successful builds, using an auto-rubrics judge. **35.7%** less generated code and **7.2 percentage-point** fewer build failures compare against a code-only reward signal. Training excludes games.
 - Dataset totals: **6,858** pairs across seven categories; **222** application versions, **412** requirements (**323** broken and **89** working), **67** traces, **828** user turns.
 
-The website presents the three main evaluation and repair results in a table. The overview figure is reproduced directly from the paper and links to the full-size image.
+The website presents the paper’s four main results in separate sections: human preferences, correctness verification, inference-time scaling, and training. Each includes a concise explanation and the corresponding original paper figure, rasterized from PDF at 2,400 pixels wide. All four result figures and the overview link to their full-size images.
 
 No public arXiv identifier, code URL, or dataset URL was present in the manuscript source. The site serves the local manuscript and does not fabricate release links or publication status.
