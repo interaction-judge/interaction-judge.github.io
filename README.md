@@ -20,4 +20,8 @@ Open **http://localhost:8000**. The preview command uses Python 3. Any static we
 
 Research content comes from the sibling `Interaction-as-a-Judge-Arxiv-` manuscript as of October 10, 2026. See [SOURCES.md](SOURCES.md) for provenance.
 
-The site can be hosted directly on GitHub Pages. `.nojekyll` disables Jekyll processing. The sharing image uses the manuscript's intended website address, `https://interaction.github.io`; update its metadata URL if the final host differs. Add the public arXiv and dataset URLs when available.
+## Deployment
+
+In the repository's **Settings → Pages**, select **GitHub Actions** as the source. The workflow in `.github/workflows/pages.yml` publishes the site on every push to `main` and can also be run manually from the Actions tab.
+
+The workflow uploads the static website files and sets the sharing image and BibTeX website URLs to the actual GitHub Pages address. No framework or build dependencies are needed. Add the public arXiv and dataset URLs when available.
