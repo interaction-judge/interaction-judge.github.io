@@ -1,0 +1,304 @@
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #242424;
+  background: #fff;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  width: min(840px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 76px 0 64px;
+}
+a {
+  color: #285ea0;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:focus-visible {
+  outline: 2px solid #285ea0;
+  outline-offset: 5px;
+}
+p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.8;
+}
+p + p {
+  margin-top: 14px;
+}
+strong {
+  font-weight: 600;
+}
+
+.paper-header {
+  text-align: center;
+}
+h1 {
+  margin: 0 0 27px;
+  font-size: 44px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -1.6px;
+}
+.authors {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 18px;
+  row-gap: 3px;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.authors > * {
+  white-space: nowrap;
+}
+.authors sup {
+  margin-left: 2px;
+}
+sup {
+  font-size: 10px;
+  line-height: 0;
+}
+.affiliations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 17px;
+  row-gap: 2px;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.9;
+  margin-top: 14px;
+}
+.affiliations span {
+  white-space: nowrap;
+}
+.paper-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 17px;
+  margin-top: 23px;
+  font-size: 15px;
+}
+.paper-links > span {
+  color: #767676;
+}
+.paper-links a {
+  padding: 5px 0;
+}
+.summary {
+  max-width: 690px;
+  margin: 43px auto 27px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #454545;
+}
+figure {
+  margin: 0 0 42px;
+}
+figure a {
+  display: block;
+}
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+figcaption {
+  margin-top: 13px;
+  color: #666;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+section {
+  margin-top: 39px;
+}
+h2 {
+  margin: 0 0 17px;
+  font-size: 23px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+  font-weight: 600;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+th,
+td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #e4e4e4;
+}
+th {
+  font-weight: 400;
+  text-align: left;
+}
+thead th {
+  padding-top: 0;
+  font-size: 13px;
+  color: #666;
+}
+th:first-child {
+  padding-left: 0;
+}
+th:last-child,
+td:last-child {
+  padding-right: 0;
+}
+td,
+thead th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+td {
+  white-space: nowrap;
+}
+.note {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.8;
+}
+.citation-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+}
+.citation-heading > a {
+  font-size: 13px;
+}
+pre {
+  margin: 0;
+  padding: 21px 23px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-radius: 3px;
+  background: #f6f6f6;
+  font-size: 12px;
+  line-height: 1.8;
+}
+code {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  main {
+    width: calc(100% - 36px);
+    padding-top: 43px;
+    padding-bottom: 40px;
+  }
+  h1 {
+    font-size: 33px;
+    letter-spacing: -1px;
+    margin-bottom: 22px;
+  }
+  .authors {
+    font-size: 14px;
+    column-gap: 13px;
+    row-gap: 5px;
+  }
+  .affiliations {
+    font-size: 12px;
+    column-gap: 13px;
+    margin-top: 16px;
+  }
+  .paper-links {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  .summary {
+    margin-top: 31px;
+    margin-bottom: 24px;
+    font-size: 16px;
+  }
+  figure {
+    margin-bottom: 31px;
+  }
+  figcaption {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+  section {
+    margin-top: 31px;
+  }
+  h2 {
+    font-size: 21px;
+    margin-bottom: 13px;
+  }
+  p {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  table {
+    font-size: 13px;
+  }
+  th,
+  td {
+    padding: 11px 7px;
+  }
+  thead th {
+    font-size: 12px;
+  }
+  .note {
+    font-size: 12px;
+  }
+  .citation-heading > a {
+    font-size: 12px;
+  }
+  pre {
+    padding: 16px;
+    font-size: 11px;
+  }
+}
+
+@media print {
+  main {
+    width: 100%;
+    padding: 0;
+  }
+  .paper-links,
+  .citation-heading > a {
+    display: none;
+  }
+  figure,
+  table,
+  pre {
+    break-inside: avoid;
+  }
+  h2 {
+    break-after: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "interaction-as-a-judge-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Research website for Interaction-as-a-Judge",
+  "scripts": {
+    "dev": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "start": "python3 -m http.server 8000 --bind 127.0.0.1"
+  }
+}

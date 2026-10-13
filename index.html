@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="Interaction-as-a-Judge: evaluating and improving interactive applications through computer use."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Interaction-as-a-Judge" />
+    <meta
+      property="og:description"
+      content="Evaluating and improving interactive applications through computer use."
+    />
+    <meta
+      property="og:image"
+      content="https://interaction.github.io/assets/social-preview.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Interaction-as-a-Judge — a research paper on evaluating interactive applications through computer use."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Interaction-as-a-Judge</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="paper-header">
+        <h1>Interaction-as-a-Judge</h1>
+        <p class="authors">
+          <a href="https://waynechi.com/">Wayne Chi<sup>1</sup></a>
+          <span>I-Hung Hsu<sup>2</sup></span>
+          <span>Li Chen<sup>3</sup></span>
+          <span>Wei-Lin Chiang<sup>4</sup></span>
+          <span>Ion Stoica<sup>4</sup></span>
+          <span>Anastasios Nikolas Angelopoulos<sup>4</sup></span>
+          <span>Ameet Talwalkar<sup>5</sup></span>
+          <span>Chris Donahue<sup>1</sup></span>
+          <span>Cho-Jui Hsieh<sup>3</sup></span>
+        </p>
+        <p class="affiliations">
+          <span><sup>1</sup> Carnegie Mellon University</span>
+          <span><sup>2</sup> Google</span>
+          <span><sup>3</sup> Arena</span>
+          <span><sup>4</sup> UC Berkeley</span>
+          <span><sup>5</sup> Datadog</span>
+        </p>
+        <nav class="paper-links" aria-label="Paper resources">
+          <a href="assets/interaction-as-a-judge.pdf">Paper (PDF)</a>
+          <span aria-hidden="true">·</span>
+          <a href="#citation">BibTeX</a>
+        </nav>
+      </header>
+
+      <p class="summary">
+        Computer-use agents evaluate applications by interacting with them. The
+        resulting traces improve both evaluation and generation.
+      </p>
+
+      <figure>
+        <a
+          href="assets/figures/overview.png"
+          aria-label="View the full-size framework figure"
+        >
+          <img
+            src="assets/figures/overview.png"
+            width="2000"
+            height="578"
+            alt="Interaction-as-a-Judge uses computer-use traces to predict human preferences, verify requirements, train reward models, and improve application generation."
+          />
+        </a>
+        <figcaption>
+          Interaction traces connect application behavior to evaluation,
+          feedback, and training.
+        </figcaption>
+      </figure>
+
+      <section aria-labelledby="abstract-title">
+        <h2 id="abstract-title">Abstract</h2>
+        <p>
+          Coding agents are tasked with producing sophisticated interactive
+          applications such as websites, desktop applications, and games. While
+          humans assess these applications interactively, current automated LLM
+          evaluations primarily focus on code analysis and unit tests. This
+          mismatch can cause LLM judges to miss failures that are immediately
+          apparent to human users. We study Interaction-as-a-Judge, an
+          evaluation paradigm where computer-use agents (CUAs) directly interact
+          with an application. We demonstrate that Interaction-as-a-Judge can
+          improve both
+          <em>evaluation</em> and <em>generation</em> of interactive
+          applications. To this end, we collect and release two complementary
+          datasets: 6,858 pairs of applications with human preferences and
+          corresponding agent traces, and 222 applications with human-verified
+          requirement labels. Relative to standard non-interactive approaches,
+          we find that Interaction-as-a-Judge improves evaluation in terms of
+          predicting human preferences (65.6% → 69.1%) and requirement
+          verification (77.0% → 81.6%). We also observe scaling benefits: across
+          both preference alignment and requirement verification, higher-quality
+          interactions improve performance. Finally, through both inference- and
+          training-time experiments, we demonstrate that Interaction-as-a-Judge
+          can also improve the quality of generated artifacts. At inference
+          time, Interaction-as-a-Judge repairs 75.5% of broken requirements
+          within five attempts, compared to 55.4% for code-only self-feedback.
+          At training time, using Interaction-as-a-Judge as a reward signal
+          improves win-rate over the base model by 6.7pp while reducing both
+          generated code length by 35.7% and build failure rates by 7.2pp
+          compared to a code-only reward signal.
+        </p>
+      </section>
+
+      <section aria-labelledby="results-title">
+        <h2 id="results-title">Key results</h2>
+        <table>
+          <caption class="visually-hidden">
+            Comparison of code-only evaluation and Interaction-as-a-Judge
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Task</th>
+              <th scope="col">Code only</th>
+              <th scope="col">With interaction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Human preference alignment</th>
+              <td>65.6%</td>
+              <td><strong>69.1%</strong></td>
+            </tr>
+            <tr>
+              <th scope="row">Requirement verification</th>
+              <td>77.0%</td>
+              <td><strong>81.6%</strong></td>
+            </tr>
+            <tr>
+              <th scope="row">Repair within five attempts</th>
+              <td>55.4%</td>
+              <td><strong>75.5%</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note">
+          Preference results use Gemini 3 Flash. Verification uses GPT 5.6 Sol;
+          repairs are made by GPT 5.6 Luna and evaluated by Sol with
+          interaction. Preference gains depend on the judge: GPT 5.6 Luna showed
+          no significant improvement. See the paper for full comparisons and
+          training results.
+        </p>
+      </section>
+
+      <section aria-labelledby="datasets-title">
+        <h2 id="datasets-title">Datasets</h2>
+        <p>
+          <strong>ArenaPreferences.</strong> 6,858 application pairs across
+          seven categories, with real user prompts, agentic traces, and human
+          preference labels.
+        </p>
+        <p>
+          <strong>ArenaCorrectness.</strong> 222 application versions with 412
+          human-verified requirements, drawn from 67 game development traces.
+        </p>
+        <p class="note">
+          <strong>Coming soon.</strong> Both datasets have not yet been publicly
+          released. Download links will be added here when they are available.
+        </p>
+      </section>
+
+      <section id="citation" aria-labelledby="citation-title">
+        <div class="citation-heading">
+          <h2 id="citation-title">Citation</h2>
+          <a href="assets/citation.bib" download>Download BibTeX</a>
+        </div>
+        <pre><code>@misc{chi2026interactionasajudge,
+  title  = {Interaction-as-a-Judge},
+  author = {Wayne Chi and I-Hung Hsu and Li Chen
+            and Wei-Lin Chiang and Ion Stoica
+            and Anastasios Nikolas Angelopoulos
+            and Ameet Talwalkar and Chris Donahue
+            and Cho-Jui Hsieh},
+  year   = {2026},
+  url    = {https://interaction.github.io}
+}</code></pre>
+      </section>
+    </main>
+  </body>
+</html>
