@@ -31,7 +31,7 @@ Wayne Chi: 1, 2; I-Hung Hsu: 2; Li Chen: 2; Wei-Lin Chiang: 2; Ion Stoica: 2, 3;
 - The manuscript reports no statistically significant preference improvement for GPT 5.6 Luna. The website explicitly notes this exception.
 - Requirement verification: **77.0 → 81.6%** with GPT 5.6 Sol.
 - Repair: **55.4 → 75.5%** within five attempts. GPT 5.6 Luna repairs; GPT 5.6 Sol evaluates. The headline values use interaction-based verification. These are model-verified repair rates, not human-verified repairs.
-- Training: **6.7 percentage-point** win-rate gain over the base model, conditional on successful builds, using an auto-rubrics judge. **35.7%** less generated code and **7.2 percentage-point** fewer build failures compare against a code-only reward signal. Training excludes games.
+- Training: **6.7 percentage-point** win-rate gain over the base model, conditional on successful builds and renders, using an internal auto-rubrics judge. The manuscript's internal calibrations equate this to **over 50 points on Arena's leaderboard**. **35.7%** less generated code and **7.2 percentage-point** fewer build failures compare against a code-only reward signal. Training excludes games.
 - Dataset totals: **6,858** pairs across seven categories; **222** application versions, **412** requirements (**323** broken and **89** working), **67** traces, **828** user turns.
 
 The website presents the paper’s four main results in separate sections: human preferences, correctness verification, inference-time scaling, and training. Each includes a concise explanation and the corresponding original paper figure, rasterized from PDF at 2,400 pixels wide. All four result figures and the overview link to their full-size images.

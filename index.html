@@ -205,9 +205,11 @@
         <p>
           Reinforcement learning with an interaction-only reward model improves
           Qwen-3.5-9B’s win rate over the base model by
-          <strong>6.7 percentage points</strong>. Compared with a code-only
-          reward signal, it generates <strong>35.7% less code</strong> and
-          increases build success from <strong>81.3% to 88.5%</strong>.
+          <strong>6.7 percentage points</strong>, equivalent to
+          <strong>over 50 points on Arena’s leaderboard</strong> according to our
+          internal calibrations. Compared with a code-only reward signal, it
+          generates <strong>35.7% less code</strong> and increases build success
+          from <strong>81.3% to 88.5%</strong>.
         </p>
         <figure>
           <a
@@ -224,8 +226,8 @@
           </a>
           <figcaption>
             Reward scores, build success, code length, and quality after training.
-            Win rates use an auto-rubrics judge on successful builds and renders.
-            Training covers six non-game categories.
+            Win rates use an internal auto-rubrics judge on successful builds
+            and renders. Training covers six non-game categories.
           </figcaption>
         </figure>
       </section>
