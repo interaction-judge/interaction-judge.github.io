@@ -18,7 +18,7 @@ Open **http://localhost:8000**. The preview command uses Python 3. Any static we
 - `assets/figures/overview.png`: the original framework figure.
 - `assets/citation.bib`: downloadable BibTeX.
 
-Research content comes from the sibling `Interaction-as-a-Judge-Arxiv-` manuscript as of October 10, 2026. See [SOURCES.md](SOURCES.md) for provenance.
+Research content comes from the sibling `Interaction-as-a-Judge-Arxiv-` manuscript. The author affiliations and downloadable PDF match the October 12, 2026 version. See [SOURCES.md](SOURCES.md) for provenance.
 
 ## Deployment
 

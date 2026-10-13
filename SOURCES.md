@@ -1,6 +1,15 @@
 # Content provenance
 
-The source of truth is the user's local paper at `../Interaction-as-a-Judge-Arxiv-/`, read on October 10, 2026. Website content is based on the active manuscript sections, excluding commented-out material and legacy files. The PDF was copied from that directory's `root.pdf` (created October 10, 2026).
+The source of truth is the user's local paper at `../Interaction-as-a-Judge-Arxiv-/`. Website content is based on the active manuscript sections, excluding commented-out material and legacy files. Author affiliations and the internship footnote were verified against both `root.tex` and the first page of `root.pdf` on October 12, 2026. The downloadable PDF is that directory's `root.pdf`, created October 12, 2026.
+
+## Author affiliations
+
+1. Carnegie Mellon University
+2. Arena
+3. University of California, Berkeley
+4. University of California, Los Angeles
+
+Wayne Chi: 1, 2; I-Hung Hsu: 2; Li Chen: 2; Wei-Lin Chiang: 2; Ion Stoica: 2, 3; Anastasios Nikolas Angelopoulos: 2; Ameet Talwalkar: 1; Chris Donahue: 1; Cho-Jui Hsieh: 2, 4. Wayne Chi's footnote reads: “Work done as part of an internship at Arena.”
 
 | Website content                        | Manuscript source                     |
 | -------------------------------------- | ------------------------------------- |
