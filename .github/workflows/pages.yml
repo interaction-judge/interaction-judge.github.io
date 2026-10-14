@@ -44,7 +44,7 @@ jobs:
               raise SystemExit("GitHub Pages did not provide an HTTPS site URL")
           for name in ("index.html", "assets/citation.bib"):
               path = Path("_site") / name
-              path.write_text(path.read_text().replace("https://interaction.github.io", site_url))
+              path.write_text(path.read_text().replace("https://interaction-judge.github.io", site_url))
           PY
 
       - name: Upload website

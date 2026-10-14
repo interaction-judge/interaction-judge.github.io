@@ -22,6 +22,10 @@ Research content comes from the sibling `Interaction-as-a-Judge-Arxiv-` manuscri
 
 ## Deployment
 
+The website's address is **https://interaction-judge.github.io/**. To publish at that address, the repository must be named **`interaction-judge.github.io`** and belong to the **`interaction-judge`** organization.
+
 In the repository's **Settings → Pages**, select **GitHub Actions** as the source. The workflow in `.github/workflows/pages.yml` publishes the site on every push to `main` and can also be run manually from the Actions tab.
+
+Leave the **Custom domain** setting empty to use the organization's `github.io` address. GitHub Free organizations require a public repository for Pages hosting.
 
 The workflow uploads the static website files and sets the sharing image and BibTeX website URLs to the actual GitHub Pages address. No framework or build dependencies are needed. Add the public arXiv and dataset URLs when available.
