@@ -58,9 +58,20 @@
       clips.map(function (c) { return clipHTML(c, "none"); }).join("");
   }
 
+  // Single curated row (rows 2-3 retired in the MACU-style pass).
+  MARQUEE_ROWS[0] = [
+    { file: "neon-apex", label: "Synthwave racer [gaming]" },
+    { file: "pixel-editor", label: "Pixel-art editor [content creation]" },
+    { file: "vault-sim", label: "Vault-cracking sim [simulations]" },
+    { file: "wordle", label: "Wordle clone [reference design]" },
+    { file: "neon-analytics", label: "Streaming analytics [data & analytics]" },
+    { file: "platformer", label: "Cute 2D platformer [gaming]" },
+    { file: "fleet-map", label: "Fleet-tracking map [data & analytics]" },
+    { file: "pool-table", label: "Pool table [gaming]" },
+    { file: "calc-watch", label: "Calculator watch [reference design]" },
+    { file: "draw-race", label: "Draw-your-own-track racer [content creation]" },
+  ];
   fillRow(0);
-  fillRow(1);
-  fillRow(2);
 
   /* ── Trajectory player ────────────────────────────────────── */
   var FPS = 2; // recordings run at 2 frames per second, one frame per step

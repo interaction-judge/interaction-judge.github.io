@@ -33,17 +33,19 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="style.css?v=23" />
   </head>
   <body>
     <header class="paper-header">
       <p class="eyebrow">Preprint · 2026</p>
-      <h1><strong>Interaction-as-a-Judge</strong></h1>
+      <h1><span class="brand-accent">Interaction</span>-as-a-Judge</h1>
       <p class="tagline">
-        We study <strong>Interaction-as-a-Judge</strong> which uses computer-use agents to
-        evaluate applications. We find that <strong>Interaction-as-a-Judge</strong> improves
-        evaluation and also improves inference-time scaling (55.4% → 75.5%)
-        and reinforcement learning with an interaction-only reward model.
+        We study <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> which uses
+        computer-use agents to evaluate applications. We find that
+        <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> improves evaluation and also
+        improves inference-time scaling <span class="stat-chip">55.4% → 75.5%</span>
+        and reinforcement learning with an interaction-only reward model
+        <span class="stat-chip">+50 Arena points</span>.
       </p>
       <p class="authors">
         <a href="https://waynechi.com/">Wayne Chi<sup>1,2*</sup></a>
@@ -59,12 +61,12 @@
       <p class="affiliations">
         <span><sup>1</sup> Carnegie Mellon University</span>
         <span><sup>2</sup> Arena</span>
-        <span><sup>3</sup> University of California, Berkeley</span>
-        <span><sup>4</sup> University of California, Los Angeles</span>
+        <span><sup>3</sup> UC Berkeley</span>
+        <span><sup>4</sup> UCLA</span>
+        <span class="note-inline"><sup>*</sup> Work done as part of an internship at Arena.</span>
       </p>
-      <p class="note"><sup>*</sup> Work done as part of an internship at Arena.</p>
       <nav class="paper-links" aria-label="Paper resources">
-        <a class="primary" href="https://arxiv.org/abs/2610.17895">arXiv</a>
+        <a href="https://arxiv.org/abs/2610.17895">arXiv</a>
         <a href="assets/interaction-as-a-judge.pdf">Paper (PDF)</a>
         <a href="#citation">BibTeX</a>
         <a href="#datasets">Datasets</a>
@@ -73,8 +75,6 @@
 
     <div class="marquee" aria-label="Computer-use agents using generated applications">
       <div class="marquee-track" id="marquee-row-0"></div>
-      <div class="marquee-track rev" id="marquee-row-1"></div>
-      <div class="marquee-track" id="marquee-row-2"></div>
     </div>
     <p class="marquee-caption">
       A computer-use judge exploring applications generated on Arena, from the
@@ -187,7 +187,7 @@
 
       <section class="wide reveal result-section" aria-labelledby="preferences-title">
         <div class="result-copy">
-        <h2 id="preferences-title">Finding 1: <strong>Interaction-as-a-Judge</strong> improves LLM and reward model alignment to human preferences</h2>
+        <h2 id="preferences-title">Finding 1: <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> improves LLM and reward model alignment to human preferences</h2>
         <div class="statline">
           <div class="stat">
             <div class="num"><span data-count="65.6">65.6</span>%<span class="arrow">→</span><span class="to"><span data-count="69.1">69.1</span>%</span></div>
@@ -216,7 +216,7 @@
 
       <section class="wide reveal result-section" aria-labelledby="correctness-title">
         <div class="result-copy">
-        <h2 id="correctness-title">Finding 2: <strong>Interaction-as-a-Judge</strong> helps models catch broken requirements</h2>
+        <h2 id="correctness-title">Finding 2: <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> helps models catch broken requirements</h2>
         <div class="statline">
           <div class="stat">
             <div class="num"><span data-count="63.0">63.0</span>%<span class="arrow">→</span><span class="to"><span data-count="71.1">71.1</span>%</span></div>
@@ -224,7 +224,7 @@
           </div>
         </div>
         <p>
-          We find that <strong>Interaction-as-a-Judge</strong> not only improves over
+          We find that <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> not only improves over
           LLM-as-a-Judge, but it also similarly scales with model performance.
         </p>
         </div>
@@ -239,7 +239,7 @@
 
       <section class="wide reveal result-section" aria-labelledby="inference-title">
         <div class="result-copy">
-        <h2 id="inference-title">Finding 3: <strong>Interaction-as-a-Judge</strong> allows for improved inference-time scaling</h2>
+        <h2 id="inference-title">Finding 3: <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> allows for improved inference-time scaling</h2>
         <div class="statline">
           <div class="stat">
             <div class="num"><span data-count="55.4">55.4</span>%<span class="arrow">→</span><span class="to"><span data-count="75.5">75.5</span>%</span></div>
@@ -262,7 +262,7 @@
 
       <section class="wide reveal result-section" aria-labelledby="training-title">
         <div class="result-copy">
-        <h2 id="training-title">Finding 4: <strong>Interaction-as-a-Judge</strong> can be used in reinforcement learning</h2>
+        <h2 id="training-title">Finding 4: <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> can be used in reinforcement learning</h2>
         <div class="statline">
           <div class="stat">
             <div class="num">+<span data-count="6.7">6.7</span>pp</div>
@@ -321,11 +321,11 @@
     </main>
 
     <footer>
-      <strong>Interaction-as-a-Judge</strong> · 2026 · Gameplay clips show computer-use agents
+      <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> · 2026 · Gameplay clips show computer-use agents
       interacting with publicly playable game-jam games and apps generated on
       Arena.
     </footer>
 
-    <script src="main.js?v=20"></script>
+    <script src="main.js?v=21"></script>
   </body>
 </html>
