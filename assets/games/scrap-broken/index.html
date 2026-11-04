@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scrap Shift 3D</title>
+  <style>
+    :root { color-scheme: dark; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #030406; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    #hud { position: fixed; inset: 0; pointer-events: none; color: #dce8d8; text-shadow: 0 2px 5px #000; }
+    #topbar { position: absolute; left: 18px; top: 14px; display: grid; gap: 6px; font-weight: 700; font-size: 15px; letter-spacing: .3px; }
+    .pill { display: inline-block; min-width: 170px; padding: 7px 10px; background: rgba(0,0,0,.45); border: 1px solid rgba(170,255,170,.16); border-radius: 9px; backdrop-filter: blur(4px); }
+    #mission { position:absolute; right:18px; top:14px; width:min(360px, 43vw); padding:13px 15px; line-height:1.35; background:rgba(1, 8, 9, .56); border:1px solid rgba(102, 255, 187, .14); border-radius:12px; font-size:14px; }
+    #mission b { color: #b8ffbf; }
+    #center { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; }
+    #center:before, #center:after { content:""; position:absolute; background:rgba(220,255,220,.76); box-shadow:0 0 6px rgba(180,255,180,.55); }
+    #center:before { left:6px; top:0; width:2px; height:14px; }
+    #center:after { top:6px; left:0; height:2px; width:14px; }
+    #prompt { position:absolute; left:50%; bottom:20%; transform:translateX(-50%); padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.62); font-size:16px; font-weight:800; opacity:0; transition: opacity .08s; }
+    #prompt.visible { opacity:1; }
+    #vignette { position:absolute; inset:0; box-shadow: inset 0 0 170px 55px rgba(0,0,0,.92); mix-blend-mode:multiply; }
+    #overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at center, rgba(14,22,24,.75), rgba(0,0,0,.96)); color:#eaffed; z-index:10; }
+    #panel { width:min(820px, calc(100vw - 42px)); border:1px solid rgba(147,255,190,.22); border-radius:18px; background:linear-gradient(180deg, rgba(10,18,21,.92), rgba(1,4,6,.92)); box-shadow:0 18px 80px rgba(0,0,0,.85); padding:28px; }
+    h1 { margin:0 0 8px; font-size: clamp(36px, 6vw, 68px); letter-spacing: -2px; line-height:.95; }
+    #panel p { max-width: 720px; color:#c7d1ca; line-height:1.55; }
+    .green { color:#93ffae; }
+    .red { color:#ff6969; }
+    button { pointer-events:auto; margin-top: 12px; padding: 12px 18px; border-radius: 11px; border: 1px solid rgba(181,255,189,.3); background:#9dff9d; color:#041006; font-weight:900; letter-spacing:.4px; cursor:pointer; box-shadow: 0 8px 28px rgba(90,255,120,.13); }
+    button:hover { filter: brightness(1.08); }
+    kbd { background:#111b1d; border:1px solid #3a5558; border-bottom-color:#1c2d2f; border-radius:5px; padding:1px 6px; color:#effff1; font-weight:800; }
+    #damage { position: fixed; inset:0; pointer-events:none; background: radial-gradient(circle, rgba(255,0,0,0) 45%, rgba(255,0,0,.45) 100%); opacity:0; transition: opacity .18s; z-index:5; }
+    #minimap { position:absolute; left:18px; bottom:18px; width:150px; height:150px; background:rgba(0,0,0,.42); border:1px solid rgba(255,255,255,.11); border-radius:12px; }
+    #status { position:absolute; left:50%; top:18px; transform:translateX(-50%); color:#ffeb8a; font-weight:900; letter-spacing:.5px; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="damage"></div>
+  <div id="hud">
+    <div id="topbar">
+      <div class="pill" id="quota">Quota: $0 / $350</div>
+      <div class="pill" id="bag">Bag: 0/6 • $0</div>
+      <div class="pill" id="clock">Time: 06:00</div>
+      <div class="pill" id="stamina">Stamina: 100%</div>
+    </div>
+    <div id="status"></div>
+    <div id="mission"><b>Contract:</b> enter the derelict facility, grab valuable junk, return to the green landing pad, and deposit enough value before the shift ends. This is an original browser prototype inspired by co-op salvage horror loops.</div>
+    <canvas id="minimap" width="150" height="150"></canvas>
+    <div id="center"></div>
+    <div id="prompt"></div>
+    <div id="vignette"></div>
+  </div>
+  <div id="overlay">
+    <div id="panel">
+      <h1>SCRAP <span class="green">SHIFT</span> 3D</h1>
+      <p>Original first-person 3D salvage horror prototype. No external libraries, no copyrighted assets. Explore, loot scrap, avoid the hunter, and meet your quota.</p>
+      <p><kbd>WASD</kbd> move &nbsp; <kbd>Mouse</kbd> look &nbsp; <kbd>Shift</kbd> sprint/noisy &nbsp; <kbd>F</kbd> flashlight &nbsp; <kbd>E</kbd> pickup/deposit &nbsp; <kbd>R</kbd> restart</p>
+      <p class="red"><b>Warning:</b> sprinting attracts the hunter. Flashlight helps you see, but it also makes you feel way less alone.</p>
+      <button id="startBtn">Start shift</button>
+    </div>
+  </div>
+<script>
+(() => {
+'use strict';
+
+const canvas = document.getElementById('game');
+const gl = canvas.getContext('webgl', { antialias: true, alpha: false });
+if (!gl) {
+  document.body.innerHTML = '<div style="color:white;padding:30px;font-family:sans-serif">WebGL is not available in this browser.</div>';
+  return;
+}
+
+const $ = id => document.getElementById(id);
+const ui = {
+  overlay: $('overlay'), startBtn: $('startBtn'), quota: $('quota'), bag: $('bag'), clock: $('clock'), stamina: $('stamina'), prompt: $('prompt'), status: $('status'), damage: $('damage'), mini: $('minimap')
+};
+const miniCtx = ui.mini.getContext('2d');
+
+// ---------- small math toolkit ----------
+const Vec3 = {
+  sub: (a,b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]],
+  add: (a,b) => [a[0]+b[0], a[1]+b[1], a[2]+b[2]],
+  mul: (a,s) => [a[0]*s, a[1]*s, a[2]*s],
+  dot: (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  len: a => Math.hypot(a[0], a[1], a[2]),
+  norm: a => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0]/l, a[1]/l, a[2]/l]; },
+  cross: (a,b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]
+};
+function mat4() { return new Float32Array(16); }
+function identity() { const m = mat4(); m[0]=m[5]=m[10]=m[15]=1; return m; }
+function multiply(a,b) {
+  const o = mat4();
+  for (let c=0;c<4;c++) for (let r=0;r<4;r++) {
+    o[c*4+r] = a[0*4+r]*b[c*4+0] + a[1*4+r]*b[c*4+1] + a[2*4+r]*b[c*4+2] + a[3*4+r]*b[c*4+3];
+  }
+  return o;
+}
+function perspective(fovy, aspect, near, far) {
+  const f = 1 / Math.tan(fovy/2), nf = 1/(near-far), m = mat4();
+  m[0] = f/aspect; m[5] = f; m[10] = (far+near)*nf; m[11] = -1; m[14] = 2*far*near*nf;
+  return m;
+}
+function lookAt(eye, center, up) {
+  const z = Vec3.norm(Vec3.sub(eye, center));
+  const x = Vec3.norm(Vec3.cross(up, z));
+  const y = Vec3.cross(z, x);
+  const m = identity();
+  m[0]=x[0]; m[4]=x[1]; m[8]=x[2];
+  m[1]=y[0]; m[5]=y[1]; m[9]=y[2];
+  m[2]=z[0]; m[6]=z[1]; m[10]=z[2];
+  m[12]=-(x[0]*eye[0]+x[1]*eye[1]+x[2]*eye[2]);
+  m[13]=-(y[0]*eye[0]+y[1]*eye[1]+y[2]*eye[2]);
+  m[14]=-(z[0]*eye[0]+z[1]*eye[1]+z[2]*eye[2]);
+  return m;
+}
+function modelMatrix(x,y,z, sx,sy,sz, rotY=0) {
+  const c = Math.cos(rotY), s = Math.sin(rotY), m = identity();
+  m[0]=c*sx; m[2]=-s*sx;
+  m[5]=sy;
+  m[8]=s*sz; m[10]=c*sz;
+  m[12]=x; m[13]=y; m[14]=z;
+  return m;
+}
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const rand = (a,b) => a + Math.random()*(b-a);
+const irand = (a,b) => Math.floor(rand(a,b+1));
+
+// ---------- WebGL setup ----------
+const vs = `
+attribute vec3 aPos;
+attribute vec3 aNormal;
+uniform mat4 uModel;
+uniform mat4 uViewProj;
+varying vec3 vWorld;
+varying vec3 vNormal;
+void main(){
+  vec4 w = uModel * vec4(aPos, 1.0);
+  vWorld = w.xyz;
+  vNormal = normalize(mat3(uModel) * aNormal);
+  gl_Position = uViewProj * w;
+}`;
+const fs = `
+precision mediump float;
+varying vec3 vWorld;
+varying vec3 vNormal;
+uniform vec3 uColor;
+uniform vec3 uCamera;
+uniform vec3 uFlashDir;
+uniform float uFlashOn;
+uniform float uEmissive;
+uniform float uDanger;
+void main(){
+  vec3 N = normalize(vNormal);
+  vec3 toCam = uCamera - vWorld;
+  float dist = length(toCam);
+  vec3 L = normalize(toCam);
+  vec3 dirToFrag = normalize(vWorld - uCamera);
+  float cone = smoothstep(0.77, 0.94, dot(dirToFrag, normalize(uFlashDir)));
+  float diffuse = max(dot(N, L), 0.0) * cone * uFlashOn * 2.25 / (1.0 + dist * dist * 0.055);
+  float rim = pow(max(0.0, 1.0 - max(dot(N, L), 0.0)), 2.0) * 0.06;
+  float ambient = 0.045;
+  vec3 color = uColor * (ambient + diffuse + rim) + uColor * uEmissive;
+  color += vec3(0.22,0.02,0.015) * uDanger;
+  float fog = clamp((dist - 4.0) / 18.0, 0.0, 1.0);
+  vec3 fogColor = vec3(0.005, 0.007, 0.009);
+  gl_FragColor = vec4(mix(color, fogColor, fog), 1.0);
+}`;
+function shader(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s); return s; }
+const program = gl.createProgram();
+gl.attachShader(program, shader(gl.VERTEX_SHADER, vs));
+gl.attachShader(program, shader(gl.FRAGMENT_SHADER, fs));
+gl.linkProgram(program);
+if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw gl.getProgramInfoLog(program);
+gl.useProgram(program);
+const loc = {
+  aPos: gl.getAttribLocation(program, 'aPos'),
+  aNormal: gl.getAttribLocation(program, 'aNormal'),
+  uModel: gl.getUniformLocation(program, 'uModel'),
+  uViewProj: gl.getUniformLocation(program, 'uViewProj'),
+  uColor: gl.getUniformLocation(program, 'uColor'),
+  uCamera: gl.getUniformLocation(program, 'uCamera'),
+  uFlashDir: gl.getUniformLocation(program, 'uFlashDir'),
+  uFlashOn: gl.getUniformLocation(program, 'uFlashOn'),
+  uEmissive: gl.getUniformLocation(program, 'uEmissive'),
+  uDanger: gl.getUniformLocation(program, 'uDanger')
+};
+
+function createMesh(data) {
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+  return { buffer: buf, count: data.length / 6 };
+}
+function face(arr, p, n) { for (const v of p) arr.push(v[0],v[1],v[2], n[0],n[1],n[2]); }
+function cubeMesh() {
+  const d=[]; const P={
+    l:-.5,r:.5,b:-.5,t:.5,f:.5,k:-.5
+  };
+  face(d, [[P.l,P.b,P.f],[P.r,P.b,P.f],[P.r,P.t,P.f], [P.l,P.b,P.f],[P.r,P.t,P.f],[P.l,P.t,P.f]], [0,0,1]);
+  face(d, [[P.r,P.b,P.k],[P.l,P.b,P.k],[P.l,P.t,P.k], [P.r,P.b,P.k],[P.l,P.t,P.k],[P.r,P.t,P.k]], [0,0,-1]);
+  face(d, [[P.l,P.b,P.k],[P.l,P.b,P.f],[P.l,P.t,P.f], [P.l,P.b,P.k],[P.l,P.t,P.f],[P.l,P.t,P.k]], [-1,0,0]);
+  face(d, [[P.r,P.b,P.f],[P.r,P.b,P.k],[P.r,P.t,P.k], [P.r,P.b,P.f],[P.r,P.t,P.k],[P.r,P.t,P.f]], [1,0,0]);
+  face(d, [[P.l,P.t,P.f],[P.r,P.t,P.f],[P.r,P.t,P.k], [P.l,P.t,P.f],[P.r,P.t,P.k],[P.l,P.t,P.k]], [0,1,0]);
+  face(d, [[P.l,P.b,P.k],[P.r,P.b,P.k],[P.r,P.b,P.f], [P.l,P.b,P.k],[P.r,P.b,P.f],[P.l,P.b,P.f]], [0,-1,0]);
+  return createMesh(d);
+}
+const cube = cubeMesh();
+function drawCube(x,y,z,sx,sy,sz,color,rotY=0,emissive=0) {
+  gl.bindBuffer(gl.ARRAY_BUFFER, cube.buffer);
+  gl.enableVertexAttribArray(loc.aPos); gl.vertexAttribPointer(loc.aPos,3,gl.FLOAT,false,24,0);
+  gl.enableVertexAttribArray(loc.aNormal); gl.vertexAttribPointer(loc.aNormal,3,gl.FLOAT,false,24,12);
+  gl.uniformMatrix4fv(loc.uModel, false, modelMatrix(x,y,z,sx,sy,sz,rotY));
+  gl.uniform3fv(loc.uColor, color);
+  gl.uniform1f(loc.uEmissive, emissive);
+  gl.drawArrays(gl.TRIANGLES, 0, cube.count);
+}
+
+// ---------- map / game state ----------
+const W = 23, H = 23;
+let map, walls, walkables, items, sparks, state;
+const scrapTypes = [
+  ['Battery', 42, [0.25,1.0,0.45]], ['Motor', 58, [0.9,0.72,0.35]], ['Signal Box', 75, [0.4,0.82,1.0]],
+  ['Toy Robot', 31, [0.88,0.5,1.0]], ['Data Core', 110, [0.35,1.0,0.88]], ['Copper Coil', 49, [1.0,0.44,0.22]], ['Old Radio', 68, [0.8,0.95,0.55]]
+];
+function makeMap() {
+  const m = Array.from({length:H}, () => Array(W).fill(1));
+  const dirs = [[2,0],[-2,0],[0,2],[0,-2]];
+  function carve(x,z) {
+    m[z][x]=0;
+    dirs.sort(() => Math.random()-.5);
+    for (const [dx,dz] of dirs) {
+      const nx=x+dx,nz=z+dz;
+      if (nx>0 && nz>0 && nx<W-1 && nz<H-1 && m[nz][nx]) {
+        m[z+dz/2][x+dx/2]=0; carve(nx,nz);
+      }
+    }
+  }
+  carve(1,1);
+  // Landing pad / entry chamber
+  for (let z=1; z<=3; z++) for (let x=1; x<=3; x++) m[z][x]=0;
+  // Larger loot rooms cut into the maze.
+  const rooms = [[14,2,6,4], [2,14,6,6], [12,14,7,5], [8,8,5,4]];
+  for (const [rx,rz,rw,rh] of rooms) for (let z=rz; z<rz+rh && z<H-1; z++) for (let x=rx; x<rx+rw && x<W-1; x++) m[z][x]=0;
+  // A couple of chokepoints.
+  m[10][11]=1; m[11][11]=1; m[12][11]=1; m[11][10]=0; m[11][12]=0;
+  return m;
+}
+function rebuildStatic() {
+  walls=[]; walkables=[];
+  for (let z=0; z<H; z++) for (let x=0; x<W; x++) {
+    if (map[z][x]) walls.push([x+.5,z+.5]); else walkables.push([x+.5,z+.5,x,z]);
+  }
+}
+function isWall(x,z) {
+  const cx = Math.floor(x), cz = Math.floor(z);
+  if (cx<0 || cz<0 || cx>=W || cz>=H) return true;
+  return map[cz][cx] === 1;
+}
+function canStand(x,z,r=.22) {
+  return !isWall(x-r,z-r) && !isWall(x+r,z-r) && !isWall(x-r,z+r) && !isWall(x+r,z+r);
+}
+function randomOpen(minDist=0) {
+  for (let i=0;i<999;i++) {
+    const w = walkables[irand(0, walkables.length-1)];
+    const d = Math.hypot(w[0]-2.2, w[1]-2.2);
+    if (d >= minDist) return {x:w[0], z:w[1], cx:w[2], cz:w[3]};
+  }
+  const w = walkables[0]; return {x:w[0], z:w[1], cx:w[2], cz:w[3]};
+}
+function resetGame() {
+  map = makeMap(); rebuildStatic();
+  items = [];
+  for (let i=0; i<22; i++) {
+    const p = randomOpen(6);
+    const t = scrapTypes[irand(0, scrapTypes.length-1)];
+    const val = Math.round(t[1] * rand(.75, 1.45));
+    items.push({ x:p.x+rand(-.22,.22), y:.23, z:p.z+rand(-.22,.22), type:t[0], value:val, color:t[2], taken:false, rot:rand(0,Math.PI*2), bob:rand(0,10) });
+  }
+  const mon = randomOpen(12);
+  state = {
+    started:false, over:false, won:false,
+    px:2.25, py:1.05, pz:2.25, yaw:0, pitch:0,
+    vx:0, vz:0, flashlight:true, stamina:1, healthFlash:0,
+    quota:350, banked:0, carried:0, bag:0, maxBag:6,
+    time:360, msg:'', msgTime:0,
+    monster:{ x:mon.x, z:mon.z, path:[], repath:0, target:null, chasing:false, stun:0 },
+    eWas:false, fWas:false, rWas:false,
+    audio:null, lastStep:0
+  };
+  sparks = Array.from({length:45}, () => { const p=randomOpen(3); return {x:p.x+rand(-.45,.45), y:rand(.4,2.2), z:p.z+rand(-.45,.45), t:rand(0,10)}; });
+  updateHud();
+}
+resetGame();
+
+// ---------- input ----------
+const keys = {};
+addEventListener('keydown', e => { keys[e.code]=true; if (['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ShiftRight','Space'].includes(e.code)) e.preventDefault(); });
+addEventListener('keyup', e => { keys[e.code]=false; });
+addEventListener('mousemove', e => {
+  if (document.pointerLockElement !== canvas || !state.started || state.over) return;
+  state.yaw -= e.movementX * 0.0024;
+  state.pitch = clamp(state.pitch - e.movementY * 0.0022, -1.25, 1.25);
+});
+ui.startBtn.addEventListener('click', start);
+canvas.addEventListener('click', () => { if (state.started && !state.over) canvas.requestPointerLock(); });
+function start() {
+  ui.overlay.style.display='none';
+  state.started=true;
+  canvas.requestPointerLock();
+  ensureAudio(); beep(130, .05, .04); setTimeout(()=>beep(210,.08,.04),80);
+}
+function endOverlay(title, text, win=false) {
+  document.exitPointerLock?.();
+  ui.overlay.style.display='flex';
+  ui.overlay.querySelector('h1').innerHTML = title;
+  const ps = ui.overlay.querySelectorAll('p');
+  ps[0].innerHTML = text;
+  ps[1].innerHTML = '<kbd>R</kbd> restart instantly, or press the button below.';
+  ps[2].innerHTML = win ? '<span class="green"><b>Contract complete.</b> Corporate is temporarily satisfied.</span>' : '<span class="red"><b>Contract failed.</b> The facility keeps what it catches.</span>';
+  ui.startBtn.textContent = 'Restart shift';
+  ui.startBtn.onclick = () => { resetGame(); start(); };
+}
+
+// ---------- audio ----------
+function ensureAudio(){
+  if (state.audio) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  state.audio = new AC();
+}
+function beep(freq=220, dur=.08, vol=.035, type='sine') {
+  if (!state.audio) return;
+  const ctx=state.audio, o=ctx.createOscillator(), g=ctx.createGain();
+  o.type=type; o.frequency.value=freq; g.gain.value=vol;
+  o.connect(g); g.connect(ctx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+dur); o.stop(ctx.currentTime+dur+.02);
+}
+function noiseBurst(dur=.16, vol=.08) {
+  if (!state.audio) return;
+  const ctx=state.audio, buffer=ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate), data=buffer.getChannelData(0);
+  for (let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*(1-i/data.length);
+  const src=ctx.createBufferSource(); src.buffer=buffer;
+  const g=ctx.createGain(); g.gain.value=vol; src.connect(g); g.connect(ctx.destination); src.start();
+}
+
+// ---------- AI pathfinding ----------
+function bfs(sx,sz, tx,tz) {
+  sx=clamp(Math.floor(sx),0,W-1); sz=clamp(Math.floor(sz),0,H-1); tx=clamp(Math.floor(tx),0,W-1); tz=clamp(Math.floor(tz),0,H-1);
+  if (map[sz][sx] || map[tz][tx]) return [];
+  const q=[[sx,sz]], seen=new Set([sx+','+sz]), prev=new Map(), dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+  for (let qi=0; qi<q.length; qi++) {
+    const [x,z]=q[qi]; if (x===tx && z===tz) break;
+    for (const [dx,dz] of dirs) {
+      const nx=x+dx,nz=z+dz,k=nx+','+nz;
+      if (nx<0||nz<0||nx>=W||nz>=H||map[nz][nx]||seen.has(k)) continue;
+      seen.add(k); prev.set(k, [x,z]); q.push([nx,nz]);
+    }
+  }
+  const end=tx+','+tz; if (!seen.has(end)) return [];
+  const path=[]; let cur=[tx,tz];
+  while (!(cur[0]===sx && cur[1]===sz)) { path.push([cur[0]+.5, cur[1]+.5]); cur = prev.get(cur[0]+','+cur[1]); }
+  path.reverse(); return path;
+}
+function hasLineOfSight(ax,az,bx,bz) {
+  const steps = Math.ceil(Math.hypot(ax-bx, az-bz)*4);
+  for (let i=1;i<steps;i++) { const t=i/steps; if (isWall(ax+(bx-ax)*t, az+(bz-az)*t)) return false; }
+  return true;
+}
+
+// ---------- gameplay ----------
+function forwardVec() {
+  return [Math.sin(state.yaw)*Math.cos(state.pitch), Math.sin(state.pitch), Math.cos(state.yaw)*Math.cos(state.pitch)];
+}
+function flatForward() { return [Math.sin(state.yaw), Math.cos(state.yaw)]; }
+function setMsg(text, seconds=2) { state.msg=text; state.msgTime=seconds; }
+function pickupNearest() {
+  let best=null, bestD=99;
+  for (const it of items) if (!it.taken) {
+    const d=Math.hypot(it.x-state.px, it.z-state.pz);
+    if (d<bestD) { bestD=d; best=it; }
+  }
+  if (best && bestD<1.15) {
+    if (state.bag >= state.maxBag) { setMsg('Bag full. Return to landing pad.', 1.7); beep(90,.1,.04,'sawtooth'); return; }
+    best.taken=true; state.bag++; state.carried += best.value;
+    setMsg(`Picked up ${best.type} ($${best.value})`, 1.5);
+    beep(520,.07,.035,'triangle'); setTimeout(()=>beep(740,.05,.025,'triangle'),70);
+  }
+}
+function deposit() {
+  if (state.carried <= 0) { setMsg('Nothing to deposit.', 1.2); return; }
+  state.banked += state.carried;
+  setMsg(`Deposited $${state.carried}.`, 1.8);
+  state.carried=0; state.bag=0;
+  beep(250,.08,.05); setTimeout(()=>beep(390,.1,.05),90);
+  if (state.banked >= state.quota) {
+    state.won=true; state.over=true;
+    endOverlay('QUOTA <span class="green">MET</span>', `You banked $${state.banked} and survived the shift.`, true);
+  }
+}
+function playerNearPad() { return state.px < 4.25 && state.pz < 4.25; }
+function update(dt) {
+  if (!state.started) return;
+  if (keys.KeyR && !state.rWas) { resetGame(); ui.overlay.style.display='none'; state.started=true; canvas.requestPointerLock(); }
+  state.rWas = !!keys.KeyR;
+  if (state.over) return;
+
+  state.time -= dt;
+  if (state.time <= 0) {
+    state.time = 0; state.over=true;
+    endOverlay('SHIFT <span class="red">ENDED</span>', `The timer hit zero with $${state.banked} / $${state.quota} banked.`, false);
+    noiseBurst(.3,.11);
+    return;
+  }
+  if (state.msgTime > 0) { state.msgTime -= dt; if (state.msgTime<=0) state.msg=''; }
+
+  if (keys.KeyF && !state.fWas) { state.flashlight=!state.flashlight; beep(state.flashlight?440:180,.04,.025,'square'); }
+  state.fWas = !!keys.KeyF;
+
+  const f = flatForward(), right=[f[1], -f[0]];
+  let ix=0, iz=0;
+  if (keys.KeyW) { ix += f[0]; iz += f[1]; }
+  if (keys.KeyS) { ix -= f[0]; iz -= f[1]; }
+  if (keys.KeyD) { ix += right[0]; iz += right[1]; }
+  if (keys.KeyA) { ix -= right[0]; iz -= right[1]; }
+  const moving = Math.hypot(ix,iz)>0;
+  if (moving) { const l=Math.hypot(ix,iz); ix/=l; iz/=l; }
+  const sprint = (keys.ShiftLeft || keys.ShiftRight) && moving && state.stamina > .04;
+  const speed = sprint ? 3.15 : 1.75;
+  if (sprint) state.stamina = Math.max(0, state.stamina - dt*.22); else state.stamina = Math.min(1, state.stamina + dt*.16);
+  const nx = state.px + ix*speed*dt, nz = state.pz + iz*speed*dt;
+  if (canStand(nx, state.pz)) state.px=nx;
+  if (canStand(state.px, nz)) state.pz=nz;
+  state.py = 1.05 + Math.sin(performance.now()/115) * (moving ? (sprint?.035:.018) : .003);
+  if (moving && performance.now()/1000 - state.lastStep > (sprint?.28:.48)) {
+    state.lastStep = performance.now()/1000;
+    if (sprint) beep(62,.025,.018,'square');
+  }
+
+  // Interaction prompt
+  let prompt='';
+  let nearest=null, nd=99;
+  for (const it of items) if (!it.taken) { const d=Math.hypot(it.x-state.px,it.z-state.pz); if (d<nd) { nd=d; nearest=it; } }
+  if (nearest && nd<1.15) prompt = `E: pick up ${nearest.type} ($${nearest.value})`;
+  if (playerNearPad()) prompt = state.carried>0 ? `E: deposit $${state.carried} at landing pad` : 'Landing pad / safe zone';
+  ui.prompt.textContent = prompt;
+  ui.prompt.classList.toggle('visible', !!prompt);
+  if (keys.KeyE && !state.eWas) {
+    if (playerNearPad() && state.carried>0) deposit(); else pickupNearest();
+  }
+  state.eWas = !!keys.KeyE;
+
+  updateMonster(dt, sprint);
+  updateHud();
+}
+function updateMonster(dt, sprint) {
+  const m = state.monster;
+  const dist = Math.hypot(m.x-state.px, m.z-state.pz);
+  const sees = dist < 8.0 && hasLineOfSight(m.x,m.z,state.px,state.pz);
+  m.chasing = sees || (sprint && dist < 13.5) || (m.chasing && dist < 11);
+  m.repath -= dt;
+  if (m.repath <= 0 || !m.path.length) {
+    if (m.chasing) {
+      m.path = bfs(m.x,m.z,state.px,state.pz);
+      m.repath = .32;
+    } else {
+      const t=randomOpen(8); m.path = bfs(m.x,m.z,t.x,t.z); m.repath = rand(1.2,2.4);
+    }
+  }
+  if (m.path.length) {
+    const target=m.path[0], dx=target[0]-m.x, dz=target[1]-m.z, len=Math.hypot(dx,dz);
+    if (len < .08) m.path.shift();
+    else {
+      const sp = m.chasing ? 2.22 : 1.05;
+      m.x += dx/len * sp * dt; m.z += dz/len * sp * dt;
+    }
+  }
+  if (dist < .62) {
+    state.healthFlash=1; state.over=true;
+    ui.damage.style.opacity=1;
+    noiseBurst(.55,.16); beep(45,.5,.08,'sawtooth');
+    setTimeout(()=>endOverlay('YOU WERE <span class="red">CAUGHT</span>', `You banked $${state.banked} before the hunter found you.`, false), 450);
+  } else {
+    state.healthFlash = Math.max(0, 1 - dist/5);
+    ui.damage.style.opacity = Math.max(0, state.healthFlash-.28).toFixed(2);
+  }
+  if (m.chasing && Math.random()<dt*.7) beep(55+Math.random()*25,.04,.018,'sawtooth');
+}
+function updateHud() {
+  ui.quota.textContent = `Quota: $${state.banked} / $${state.quota}`;
+  ui.bag.textContent = `Bag: ${state.bag}/${state.maxBag} • $${state.carried}`;
+  const mins = Math.floor(state.time/60), secs = Math.floor(state.time%60).toString().padStart(2,'0');
+  ui.clock.textContent = `Time: ${String(mins).padStart(2,'0')}:${secs}`;
+  ui.stamina.textContent = `Stamina: ${Math.round(state.stamina*100)}%`;
+  ui.status.textContent = state.msg || (state.monster.chasing ? 'HUNTER IS TRACKING YOU' : '');
+  ui.status.style.color = state.monster.chasing ? '#ff6666' : '#ffeb8a';
+}
+function drawMinimap() {
+  const c=miniCtx, s=ui.mini.width/W;
+  c.clearRect(0,0,150,150);
+  c.fillStyle='rgba(4,10,12,.75)'; c.fillRect(0,0,150,150);
+  for (let z=0;z<H;z++) for (let x=0;x<W;x++) {
+    if (map[z][x]) { c.fillStyle='rgba(130,145,150,.35)'; c.fillRect(x*s,z*s,s,s); }
+  }
+  c.fillStyle='rgba(80,255,110,.35)'; c.fillRect(s,s,s*3,s*3);
+  for (const it of items) if(!it.taken) { c.fillStyle='rgba(255,220,90,.75)'; c.fillRect(it.x*s-1,it.z*s-1,2,2); }
+  if (state.monster.chasing || Math.hypot(state.monster.x-state.px,state.monster.z-state.pz)<6) { c.fillStyle='rgba(255,50,50,.9)'; c.beginPath(); c.arc(state.monster.x*s,state.monster.z*s,3,0,Math.PI*2); c.fill(); }
+  c.save(); c.translate(state.px*s,state.pz*s); c.rotate(-state.yaw); c.fillStyle='#abffbf'; c.beginPath(); c.moveTo(0,-5); c.lineTo(3,4); c.lineTo(-3,4); c.closePath(); c.fill(); c.restore();
+}
+
+// ---------- render ----------
+function resize() {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const w = Math.floor(innerWidth*dpr), h = Math.floor(innerHeight*dpr);
+  if (canvas.width!==w || canvas.height!==h) { canvas.width=w; canvas.height=h; }
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+function render(t) {
+  resize();
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
+  gl.clearColor(0.003,0.004,0.006,1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  const aspect = canvas.width / canvas.height;
+  const proj = perspective(Math.PI/3, aspect, .05, 60);
+  const fv = forwardVec();
+  const eye = [state.px, state.py, state.pz];
+  const center = [state.px+fv[0], state.py+fv[1], state.pz+fv[2]];
+  const vp = multiply(proj, lookAt(eye, center, [0,1,0]));
+  gl.useProgram(program);
+  gl.uniformMatrix4fv(loc.uViewProj, false, vp);
+  gl.uniform3fv(loc.uCamera, eye);
+  gl.uniform3fv(loc.uFlashDir, fv);
+  gl.uniform1f(loc.uFlashOn, state.flashlight ? 1 : 0);
+  gl.uniform1f(loc.uDanger, state.healthFlash || 0);
+
+  // Floor and ceiling.
+  drawCube(W/2, -0.08, H/2, W, .10, H, [0.12,0.15,0.15], 0, 0);
+  drawCube(W/2, 2.86, H/2, W, .10, H, [0.055,0.065,0.07], 0, 0);
+
+  // Landing pad / safe deposit zone.
+  drawCube(2.5, .015, 2.5, 3.0, .05, 3.0, [0.05, 0.85, 0.18], 0, .18 + Math.sin(t/250)*.03);
+  drawCube(2.5, .08, 4.08, 3.0, .16, .09, [0.05,0.8,0.16], 0, .12);
+
+  // Walls.
+  for (const [x,z] of walls) {
+    const shade = ((Math.floor(x*13+z*7)%5)/100);
+    drawCube(x, 1.35, z, 1.0, 2.7, 1.0, [0.18+shade,0.205+shade,0.215+shade], 0, 0);
+  }
+
+  // Scrap items.
+  for (const it of items) if (!it.taken) {
+    const bob = Math.sin(t/550 + it.bob)*.045;
+    it.rot += .006;
+    drawCube(it.x, it.y+bob, it.z, .34, .34, .34, it.color, it.rot, .18);
+    drawCube(it.x, it.y+bob+.27, it.z, .12, .08, .12, [1,1,.75], -it.rot*1.7, .35);
+  }
+
+  // Electrical sparks / tiny guide lights.
+  for (const sp of sparks) {
+    const pulse = Math.max(0, Math.sin(t/180 + sp.t*9));
+    if (pulse > .72) drawCube(sp.x, sp.y, sp.z, .045, .045, .045, [0.4,0.9,1.0], 0, 1.1);
+  }
+
+  // Hunter: abstract original monster form.
+  const m=state.monster, pulse = Math.sin(t/90)*.08;
+  drawCube(m.x, .72, m.z, .55+pulse, 1.15, .55+pulse, [0.58,0.02,0.035], t/300, m.chasing ? .35 : .12);
+  drawCube(m.x+.18*Math.sin(t/220), 1.45, m.z+.18*Math.cos(t/220), .32, .32, .32, [1.0,0.08,0.05], -t/180, .65);
+  drawCube(m.x-.23, .15, m.z, .12, .35, .12, [0.45,0.01,0.02], 0, .08);
+  drawCube(m.x+.23, .15, m.z, .12, .35, .12, [0.45,0.01,0.02], 0, .08);
+
+  drawMinimap();
+}
+let last=performance.now();
+function loop(now) {
+  const dt = Math.min(.05, (now-last)/1000); last=now;
+  update(dt); render(now);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#fdfdfb" />
     <meta
       name="description"
       content="Interaction-as-a-Judge: evaluating and improving interactive applications through computer use."
@@ -27,244 +27,305 @@
     <meta name="twitter:card" content="summary_large_image" />
     <title>Interaction-as-a-Judge</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=20" />
   </head>
   <body>
+    <header class="paper-header">
+      <p class="eyebrow">Preprint · 2026</p>
+      <h1><strong>Interaction-as-a-Judge</strong></h1>
+      <p class="tagline">
+        We study <strong>Interaction-as-a-Judge</strong> which uses computer-use agents to
+        evaluate applications. We find that <strong>Interaction-as-a-Judge</strong> improves
+        evaluation and also improves inference-time scaling (55.4% → 75.5%)
+        and reinforcement learning with an interaction-only reward model.
+      </p>
+      <p class="authors">
+        <a href="https://waynechi.com/">Wayne Chi<sup>1,2*</sup></a>
+        <span>I-Hung Hsu<sup>2</sup></span>
+        <span>Li Chen<sup>2</sup></span>
+        <span>Wei-Lin Chiang<sup>2</sup></span>
+        <span>Ion Stoica<sup>2,3</sup></span>
+        <span>Anastasios Nikolas Angelopoulos<sup>2</sup></span>
+        <span>Ameet Talwalkar<sup>1</sup></span>
+        <span>Chris Donahue<sup>1</sup></span>
+        <span>Cho-Jui Hsieh<sup>2,4</sup></span>
+      </p>
+      <p class="affiliations">
+        <span><sup>1</sup> Carnegie Mellon University</span>
+        <span><sup>2</sup> Arena</span>
+        <span><sup>3</sup> University of California, Berkeley</span>
+        <span><sup>4</sup> University of California, Los Angeles</span>
+      </p>
+      <p class="note"><sup>*</sup> Work done as part of an internship at Arena.</p>
+      <nav class="paper-links" aria-label="Paper resources">
+        <a class="primary" href="https://arxiv.org/abs/2610.17895">arXiv</a>
+        <a href="assets/interaction-as-a-judge.pdf">Paper (PDF)</a>
+        <a href="#citation">BibTeX</a>
+        <a href="#datasets">Datasets</a>
+      </nav>
+    </header>
+
+    <div class="marquee" aria-label="Computer-use agents using generated applications">
+      <div class="marquee-track" id="marquee-row-0"></div>
+      <div class="marquee-track rev" id="marquee-row-1"></div>
+      <div class="marquee-track" id="marquee-row-2"></div>
+    </div>
+    <p class="marquee-caption">
+      A computer-use judge exploring applications generated on Arena, from the
+      released ArenaPreferences traces. Hover to pause.
+    </p>
+
     <main>
-      <header class="paper-header">
-        <h1>Interaction-as-a-Judge</h1>
-        <p class="authors">
-          <a href="https://waynechi.com/">Wayne Chi<sup>1,2*</sup></a>
-          <span>I-Hung Hsu<sup>2</sup></span>
-          <span>Li Chen<sup>2</sup></span>
-          <span>Wei-Lin Chiang<sup>2</sup></span>
-          <span>Ion Stoica<sup>2,3</sup></span>
-          <span>Anastasios Nikolas Angelopoulos<sup>2</sup></span>
-          <span>Ameet Talwalkar<sup>1</sup></span>
-          <span>Chris Donahue<sup>1</sup></span>
-          <span>Cho-Jui Hsieh<sup>2,4</sup></span>
-        </p>
-        <p class="affiliations">
-          <span><sup>1</sup> Carnegie Mellon University</span>
-          <span><sup>2</sup> Arena</span>
-          <span><sup>3</sup> University of California, Berkeley</span>
-          <span><sup>4</sup> University of California, Los Angeles</span>
-        </p>
-        <p class="note">
-          <sup>*</sup> Work done as part of an internship at Arena.
-        </p>
-        <nav class="paper-links" aria-label="Paper resources">
-          <a href="assets/interaction-as-a-judge.pdf">Paper (PDF)</a>
-          <span aria-hidden="true">·</span>
-          <a href="#citation">BibTeX</a>
-        </nav>
-      </header>
-
-      <figure>
-        <a
-          href="assets/figures/overview.png"
-          aria-label="View the full-size framework figure"
-        >
-          <img
-            src="assets/figures/overview.png"
-            width="2000"
-            height="578"
-            alt="Interaction-as-a-Judge uses computer-use traces to predict human preferences, verify requirements, train reward models, and improve application generation."
-          />
-        </a>
-        <figcaption>
-          Interaction traces connect application behavior to evaluation,
-          feedback, and training.
-        </figcaption>
-      </figure>
-
-      <section aria-labelledby="abstract-title">
-        <h2 id="abstract-title">Abstract</h2>
-        <p>
-          Coding agents are tasked with producing sophisticated interactive
-          applications such as websites, desktop applications, and games. While
-          humans assess these applications interactively, current automated LLM
-          evaluations primarily focus on code analysis and unit tests. This
-          mismatch can cause LLM judges to miss failures that are immediately
-          apparent to human users. We study Interaction-as-a-Judge, an
-          evaluation paradigm where computer-use agents (CUAs) directly interact
-          with an application. We demonstrate that Interaction-as-a-Judge can
-          improve both
-          <em>evaluation</em> and <em>generation</em> of interactive
-          applications. To this end, we collect and release two complementary
-          datasets: 6,858 pairs of applications with human preferences and
-          corresponding agent traces, and 222 applications with human-verified
-          requirement labels. Relative to standard non-interactive approaches,
-          we find that Interaction-as-a-Judge improves evaluation in terms of
-          predicting human preferences (65.6% → 69.1%) and requirement
-          verification (77.0% → 81.6%). We also observe scaling benefits: across
-          both preference alignment and requirement verification, higher-quality
-          interactions improve performance. Finally, through both inference- and
-          training-time experiments, we demonstrate that Interaction-as-a-Judge
-          can also improve the quality of generated artifacts. At inference
-          time, Interaction-as-a-Judge repairs 75.5% of broken requirements
-          within five attempts, compared to 55.4% for code-only self-feedback.
-          At training time, using Interaction-as-a-Judge as a reward signal
-          improves win-rate over the base model by 6.7pp while reducing both
-          generated code length by 35.7% and build failure rates by 7.2pp
-          compared to a code-only reward signal.
-        </p>
-      </section>
-
-      <section aria-labelledby="preferences-title">
-        <h2 id="preferences-title">Human preferences</h2>
-        <p>
-          With iterative computer use, Gemini 3 Flash’s agreement with human
-          preferences improves from <strong>65.6% to 69.1%</strong>. A trained
-          reward model reaches <strong>70.8%</strong>, outperforming the
-          off-the-shelf LLM judges. Interaction traces alone also support
-          reward-model training without access to code.
-        </p>
-        <figure>
-          <a
-            href="assets/figures/human-preferences.png"
-            aria-label="View the full-size human preference results"
-          >
-            <img
-              src="assets/figures/human-preferences.png"
-              width="2400"
-              height="522"
-              loading="lazy"
-              alt="Preference accuracy for code, code plus screenshot, and three interaction strategies. Iterative interaction reaches 69.1% with Gemini 3 Flash, 70.8% with a full-code reward model, and 69.0% with an interaction-only reward model."
-            />
-          </a>
-          <figcaption>
-            Human preference alignment across LLM judges and reward models.
-            GPT 5.6 Luna shows no statistically significant improvement from
-            interaction.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section aria-labelledby="correctness-title">
-        <h2 id="correctness-title">Correctness verification</h2>
-        <p>
-          With GPT 5.6 Sol, interaction improves balanced requirement-verification
-          accuracy from <strong>77.0% to 81.6%</strong>. The largest gain comes
-          from identifying broken requirements: <strong>63.0% to 71.1%</strong>.
-          Verification improves as the computer-use model becomes more capable.
-        </p>
-        <figure>
-          <a
-            href="assets/figures/correctness-verification.png"
-            aria-label="View the full-size correctness verification results"
-          >
-            <img
-              src="assets/figures/correctness-verification.png"
-              width="2400"
-              height="655"
-              loading="lazy"
-              alt="Requirement verification and discovery across GPT 5.6 Luna, Terra, and Sol. Interaction improves verification for every model; broken-requirement accuracy rises from 65.2% with Luna to 71.1% with Sol. Discovery recall remains low for both approaches."
-            />
-          </a>
-          <figcaption>
-            Verification of broken and working requirements, their unweighted
-            average, and discovery of broken requirements. Requirement discovery
-            remains challenging for both approaches.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section aria-labelledby="inference-title">
-        <h2 id="inference-title">Inference-time scaling</h2>
-        <p>
-          Interaction-based self-feedback repairs <strong>75.5%</strong> of
-          initially broken requirements within five attempts, compared with
-          <strong>55.4%</strong> for code-only self-feedback. The improvement
-          persists under both interaction-based and code-only evaluation, with a
-          smaller gap between self-reported and externally evaluated success.
-        </p>
-        <figure>
-          <a
-            href="assets/figures/inference-time-scaling.png"
-            aria-label="View the full-size inference-time scaling results"
-          >
-            <img
-              src="assets/figures/inference-time-scaling.png"
-              width="2400"
-              height="622"
-              loading="lazy"
-              alt="Repair success over five iterations using code-only or interaction-based self-feedback. Sol’s interaction evaluation finds 75.5% repaired with interaction versus 55.4% with code only; its code evaluation finds 77.4% versus 63.8%. Interaction also reduces the self-verification gap."
-            />
-          </a>
-          <figcaption>
-            GPT 5.6 Luna repairs and self-verifies; GPT 5.6 Sol evaluates the
-            repairs. The 75.5% and 55.4% results use Sol’s interaction-based
-            evaluation.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section aria-labelledby="training-title">
-        <h2 id="training-title">Training</h2>
-        <p>
-          Reinforcement learning with an interaction-only reward model improves
-          Qwen-3.5-9B’s win rate over the base model by
-          <strong>6.7 percentage points</strong>, equivalent to
-          <strong>over +50 points on Arena’s leaderboard</strong> according to our
-          internal calibrations. Compared with a code-only reward signal, it
-          generates <strong>35.7% less code</strong> and increases build success
-          from <strong>81.3% to 88.5%</strong>.
-        </p>
-        <figure>
-          <a
-            href="assets/figures/training.png"
-            aria-label="View the full-size training results"
-          >
-            <img
-              src="assets/figures/training.png"
-              width="2400"
-              height="464"
-              loading="lazy"
-              alt="Training curves compare code-only, interaction-only, and build-only reward signals. Interaction-based training improves build success and reduces generated code compared with code-only rewards, while an auto-rubrics judge measures a 6.72 percentage-point win-rate gain over the base model."
-            />
-          </a>
-          <figcaption>
-            Reward scores, build success, code length, and quality after training.
-            Win rates use an internal auto-rubrics judge on successful builds
-            and renders. Training covers six non-game categories.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section aria-labelledby="datasets-title">
+      <section class="wide reveal" id="datasets" aria-labelledby="datasets-title">
         <h2 id="datasets-title">Datasets</h2>
-        <p>
-          <strong>ArenaPreferences.</strong> 6,858 application pairs across
-          seven categories, with real user prompts, agentic traces, and human
-          preference labels.
-        </p>
-        <p>
-          <strong>ArenaCorrectness.</strong> 222 application versions with 412
-          human-verified requirements, drawn from 67 game development traces.
-        </p>
-        <p class="note">
-          <strong>Coming soon.</strong> Both datasets have not yet been publicly
-          released. Download links will be added here when they are available.
-        </p>
+
+        <div class="ds-block">
+          <p class="ds-name">ArenaPreferences<span class="ds-desc"> — 6,858 application pairs with real user prompts, agent traces, and human preference labels.</span> <span class="coming">not yet released</span></p>
+          <div class="tabs" id="battle-tabs" role="tablist"><button class="tab active" data-battle="gaming" role="tab">Gaming</button><button class="tab" data-battle="sim" role="tab">Simulations</button><button class="tab" data-battle="reference" role="tab">Reference design</button><button class="tab" data-battle="content" role="tab">Content creation</button><button class="tab" data-battle="data" role="tab">Data & analytics</button><button class="tab" data-battle="consumer" role="tab">Consumer apps</button><button class="tab" data-battle="brand" role="tab">Brand sites</button></div>
+          <div class="battle" data-battle="gaming">
+            <div class="prompt-card"><strong>User prompt</strong>create a 2d metroidvania browser game with a tutorial level. make sure the tutorial level can be completed and demonstrates basic moves, combat, and platforming with at l…</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-gaming-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-gaming-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B <span class="ex-win">human preferred</span></figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="sim">
+            <div class="prompt-card"><strong>User prompt</strong>Build a bubble blowing toy with wand dipping, cursor-drag to blow, iridescent bubble surfaces, float physics, and pop interactions.</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-sim-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-sim-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B <span class="ex-win">human preferred</span></figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="reference">
+            <div class="prompt-card"><strong>User prompt</strong>Design an Instagram-style feed with post cards, like/comment buttons, story circles, and profile headers. Use CSS patterns instead of photos.</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-reference-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-reference-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="content">
+            <div class="prompt-card"><strong>User prompt</strong>@import url(&#x27;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap&#x27;); * { box-sizing: border-box; margin: 0; padding: 0; font-family: &#x27;Inter&#x27;, …</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-content-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-content-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="data">
+            <div class="prompt-card"><strong>User prompt</strong>Create an interactive analytics dashboard for #include &lt;Wire.h&gt; #include &lt;Adafruit_INA219.h&gt; #include &lt;OneWire.h&gt; #include &lt;DallasTemperature.h&gt; #include &lt;WiFi.h&gt; #includ…</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-data-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-data-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="consumer">
+            <div class="prompt-card"><strong>User prompt</strong>Design a premium Shopify homepage for A Squared LLC, a modern online candy store. Create an award-winning UI inspired by Apple, Awwwards, and Behance. The design should b…</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-consumer-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-consumer-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+            </div>
+          </div>
+          <div class="battle" data-battle="brand">
+            <div class="prompt-card"><strong>User prompt</strong>create a landing page for &quot;Aurentis FC&quot; which has a u12-u14, u15-to u17 and professional football team, academy, professional football team,</div>
+            <div class="pair-media">
+              <figure class="pair-item"><video src="assets/media/arena/cat-brand-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-brand-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-block">
+          <p class="ds-name">ArenaCorrectness<span class="ds-desc"> — 222 application versions with 412 human-verified requirements.</span> <span class="coming">not yet released</span></p>
+          <div class="tabs" id="repair-tabs" role="tablist"></div>
+          <div class="repair-grid tabbed" id="repair-grid"></div>
+        </div>
       </section>
 
-      <section id="citation" aria-labelledby="citation-title">
+      <section class="wide reveal" aria-labelledby="strategies-title">
+        <h2 id="strategies-title">We evaluate three computer-use methods</h2>
+        <p class="section-lede">
+          Better computer-use methods lead to richer interactions and better
+          evaluations.
+        </p>
+        <div class="tabs" id="app-tabs" role="tablist">
+          <button class="tab active" data-app="neonapex" role="tab">Synthwave racer</button>
+          <button class="tab" data-app="icecream" role="tab">Ice-cream shop</button>
+          <button class="tab" data-app="win31" role="tab">Windows 3.1 desktop</button>
+        </div>
+        <div class="triptych" id="triptych">
+          <div class="policy" data-policy="baseline">
+            <div class="policy-head">
+              <div class="policy-name">Heuristic Computer-Use (Random)</div>
+              <div class="policy-desc">Actions sampled from the action space, no observation.</div>
+            </div>
+            <video muted playsinline loop preload="auto"></video>
+          </div>
+          <div class="policy" data-policy="programmatic">
+            <div class="policy-head">
+              <div class="policy-name">One-Shot Computer-Use</div>
+              <div class="policy-desc">Sees one screenshot, then plans all actions up front.</div>
+            </div>
+            <video muted playsinline loop preload="auto"></video>
+          </div>
+          <div class="policy highlight" data-policy="interactive">
+            <div class="policy-head">
+              <div class="policy-name">Iterative Computer-Use</div>
+              <div class="policy-desc">Observes the screen at every step before acting.</div>
+            </div>
+            <video muted playsinline loop preload="auto"></video>
+          </div>
+        </div>
+        <div class="triptych-bar">
+          <button class="btn" id="tript-restart">Replay in sync</button>
+        </div>
+      </section>
+
+      <section class="wide reveal result-section" aria-labelledby="preferences-title">
+        <div class="result-copy">
+        <h2 id="preferences-title">Finding 1: <strong>Interaction-as-a-Judge</strong> improves LLM and reward model alignment to human preferences</h2>
+        <div class="statline">
+          <div class="stat">
+            <div class="num"><span data-count="65.6">65.6</span>%<span class="arrow">→</span><span class="to"><span data-count="69.1">69.1</span>%</span></div>
+            <div class="lbl">LLM judge accuracy</div>
+          </div>
+          <div class="stat">
+            <div class="num"><span class="to"><span data-count="70.8">70.8</span>%</span></div>
+            <div class="lbl">Trained reward model</div>
+          </div>
+        </div>
+        <p>
+          Iterative computer-use agents (GPT 5.6 Luna) improve human alignment
+          compared to code-only and code+screenshot judges. Additionally,
+          better computer-use methods lead to better performance. We also find
+          that it&rsquo;s possible to train a reward model on interactions alone.
+        </p>
+        </div>
+        <figure>
+          <div class="chart" data-chart="pref" role="img"
+            aria-label="Preference accuracy per judge and reward model, from code plus screenshot through heuristic, one-shot, and iterative computer-use. Gemini 3 Flash improves from 67.6 to 69.1 percent; the full-code reward model reaches 70.8; GPT 5.6 Luna shows no significant change."></div>
+          <figcaption>
+            Agreement with human preferences.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="wide reveal result-section" aria-labelledby="correctness-title">
+        <div class="result-copy">
+        <h2 id="correctness-title">Finding 2: <strong>Interaction-as-a-Judge</strong> helps models catch broken requirements</h2>
+        <div class="statline">
+          <div class="stat">
+            <div class="num"><span data-count="63.0">63.0</span>%<span class="arrow">→</span><span class="to"><span data-count="71.1">71.1</span>%</span></div>
+            <div class="lbl">Broken requirement detection</div>
+          </div>
+        </div>
+        <p>
+          We find that <strong>Interaction-as-a-Judge</strong> not only improves over
+          LLM-as-a-Judge, but it also similarly scales with model performance.
+        </p>
+        </div>
+        <figure>
+          <div class="chart" data-chart="corr" role="img"
+            aria-label="Broken-requirement detection versus cost per app version, log scale. Interaction-as-a-Judge: Luna 65.2 percent at 2.6 cents, Terra 68.0 at 27 cents, Sol 71.1 at 62 cents. Code-only: Luna 51.6 at under a cent, Terra 59.6 at 8.5 cents, Sol 63.0 at 15.5 cents."></div>
+          <figcaption>
+            Broken-requirement detection rate vs. end-to-end cost (judge + computer-use; log scale).
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="wide reveal result-section" aria-labelledby="inference-title">
+        <div class="result-copy">
+        <h2 id="inference-title">Finding 3: <strong>Interaction-as-a-Judge</strong> allows for improved inference-time scaling</h2>
+        <div class="statline">
+          <div class="stat">
+            <div class="num"><span data-count="55.4">55.4</span>%<span class="arrow">→</span><span class="to"><span data-count="75.5">75.5</span>%</span></div>
+            <div class="lbl">Requirements repaired</div>
+          </div>
+        </div>
+        <p>
+          Interaction-based self-feedback repairs far more broken requirements
+          than code-only self-feedback.
+        </p>
+        </div>
+        <figure>
+          <div class="chart" data-chart="repair" role="img"
+            aria-label="Requirements fixed over five repair iterations: interaction-based self-feedback rises from 63.5 percent after one attempt to 75.5 after five; code-only from 49.8 to 55.4."></div>
+          <figcaption>
+            Requirements fixed per repair iteration (GPT 5.6 Luna).
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="wide reveal result-section" aria-labelledby="training-title">
+        <div class="result-copy">
+        <h2 id="training-title">Finding 4: <strong>Interaction-as-a-Judge</strong> can be used in reinforcement learning</h2>
+        <div class="statline">
+          <div class="stat">
+            <div class="num">+<span data-count="6.7">6.7</span>pp</div>
+            <div class="lbl">Win rate vs base model</div>
+          </div>
+          <div class="stat">
+            <div class="num">&minus;<span data-count="35.7">35.7</span>%</div>
+            <div class="lbl">Generated code length</div>
+          </div>
+          <div class="stat">
+            <div class="num"><span data-count="81.3">81.3</span>%<span class="arrow">→</span><span class="to"><span data-count="88.5">88.5</span>%</span></div>
+            <div class="lbl">Build success</div>
+          </div>
+        </div>
+        <p>
+          RL with an interaction-only reward improves Qwen-3.5-9B&rsquo;s win
+          rate by the equivalent of <strong>over +50 Arena leaderboard
+          points</strong>. Additionally, it does so while both reducing build
+          failures and also reducing code bloat.
+        </p>
+        </div>
+        <figure>
+          <div class="chart-duo">
+            <div class="chart" data-chart="train-builds" role="img" aria-label="Successful builds over 35 RL training steps for build-only, code, and interaction reward signals."></div>
+            <div class="chart" data-chart="train-chars" role="img" aria-label="Mean generated code characters over 35 RL training steps for the three reward signals."></div>
+            <div class="chart" data-chart="train" role="img"
+            aria-label="Auto-rubric win-rate gain over the base model: 6.14 percentage points with the code reward model, 6.72 with the interaction reward model."></div>
+          </div>
+          <figcaption>
+            Internal auto-rubric win-rate gain over the base model after RL training.
+          </figcaption>
+        </figure>
+      </section>
+
+
+      <section class="narrow reveal" id="citation" aria-labelledby="citation-title">
         <div class="citation-heading">
-          <h2 id="citation-title">Citation</h2>
+          <div>
+            <h2 id="citation-title">Citation</h2>
+          </div>
           <a href="assets/citation.bib" download>Download BibTeX</a>
         </div>
         <pre><code>@misc{chi2026interactionasajudge,
-  title  = {Interaction-as-a-Judge},
-  author = {Wayne Chi and I-Hung Hsu and Li Chen
-            and Wei-Lin Chiang and Ion Stoica
-            and Anastasios Nikolas Angelopoulos
-            and Ameet Talwalkar and Chris Donahue
-            and Cho-Jui Hsieh},
-  year   = {2026},
-  url    = {https://interaction-judge.github.io}
+  title         = {Interaction-as-a-Judge},
+  author        = {Wayne Chi and I-Hung Hsu and Li Chen
+                   and Wei-Lin Chiang and Ion Stoica
+                   and Anastasios Nikolas Angelopoulos
+                   and Ameet Talwalkar and Chris Donahue
+                   and Cho-Jui Hsieh},
+  year          = {2026},
+  eprint        = {2610.17895},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2610.17895}
 }</code></pre>
       </section>
     </main>
+
+    <footer>
+      <strong>Interaction-as-a-Judge</strong> · 2026 · Gameplay clips show computer-use agents
+      interacting with publicly playable game-jam games and apps generated on
+      Arena.
+    </footer>
+
+    <script src="main.js?v=20"></script>
   </body>
 </html>
