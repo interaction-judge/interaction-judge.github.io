@@ -570,6 +570,10 @@ pre {
   line-height: 1.6;
 }
 
+.remarks-list { color: var(--ink-soft); padding-left: 22px; }
+.remarks-list li { margin: 10px 0; }
+.remarks-list strong { color: var(--ink); }
+
 footer {
   border-top: 1px solid var(--rule);
   margin-top: 80px;
