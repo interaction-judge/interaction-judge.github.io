@@ -33,7 +33,7 @@ jobs:
           SITE_URL: ${{ steps.pages.outputs.base_url }}
         run: |
           mkdir -p _site
-          cp index.html style.css .nojekyll _site/
+          cp index.html style.css main.js .nojekyll _site/
           cp -R assets _site/assets
           python3 - <<'PY'
           import os
