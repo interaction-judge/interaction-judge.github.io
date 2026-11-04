@@ -84,9 +84,16 @@
     <main>
       <section class="wide reveal" id="datasets" aria-labelledby="datasets-title">
         <h2 id="datasets-title">Datasets</h2>
+        <p class="section-lede">
+          Along with <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong>,
+          we are open sourcing ArenaPreferences and ArenaCorrectness, two
+          agentic datasets with real user interactions, preferences, and
+          labels. We hope that by releasing this data we can help further
+          advance research into coding agents and computer-use agents.
+        </p>
 
         <div class="ds-block">
-          <p class="ds-name">ArenaPreferences<span class="ds-desc"> — 6,858 application pairs with real user prompts, agent traces, and human preference labels.</span> <span class="coming">not yet released</span></p>
+          <p class="ds-name">ArenaPreferences<span class="ds-desc">: 6,858 application pairs across 7 different categories with real user prompts, agent traces, and human preference labels. Agents are tasked with determining user preference between the application pairs.</span> <span class="coming">not yet released</span></p>
           <div class="tabs" id="battle-tabs" role="tablist"><button class="tab active" data-battle="gaming" role="tab">Gaming</button><button class="tab" data-battle="sim" role="tab">Simulations</button><button class="tab" data-battle="reference" role="tab">Reference design</button><button class="tab" data-battle="content" role="tab">Content creation</button><button class="tab" data-battle="data" role="tab">Data & analytics</button><button class="tab" data-battle="consumer" role="tab">Consumer apps</button><button class="tab" data-battle="brand" role="tab">Brand sites</button></div>
           <div class="battle" data-battle="gaming">
             <div class="prompt-card"><strong>User prompt</strong>create a 2d metroidvania browser game with a tutorial level. make sure the tutorial level can be completed and demonstrates basic moves, combat, and platforming with at l…</div>
@@ -140,7 +147,7 @@
         </div>
 
         <div class="ds-block">
-          <p class="ds-name">ArenaCorrectness<span class="ds-desc"> — 222 application versions with 412 human-verified requirements.</span> <span class="coming">not yet released</span></p>
+          <p class="ds-name">ArenaCorrectness<span class="ds-desc">: 222 game versions with 412 human-verified requirements. Requirements are labeled and associated with &ldquo;Broken&rdquo; or &ldquo;Working&rdquo; versions of games. Models are tasked with identifying whether requirements are broken or working.</span> <span class="coming">not yet released</span></p>
           <div class="tabs" id="repair-tabs" role="tablist"></div>
           <div class="repair-grid tabbed" id="repair-grid"></div>
         </div>
