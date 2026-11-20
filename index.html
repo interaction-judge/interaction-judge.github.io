@@ -33,18 +33,20 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=28" />
+    <link rel="stylesheet" href="style.css?v=29" />
   </head>
   <body>
     <header class="paper-header">
       <p class="eyebrow">Preprint · 2026</p>
       <h1><span class="brand-accent">Interaction</span>-as-a-Judge</h1>
       <p class="tagline">
-        We study <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> which uses
-        computer-use agents to evaluate applications. We find that
-        <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> improves evaluation and also
-        improves inference-time scaling <span class="stat-chip">55.4% → 75.5%</span>
-        and reinforcement learning with an interaction-only reward model
+        We study <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong>, a paradigm
+        which uses computer-use agents to evaluate applications. We find that
+        <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong> improves both
+        evaluation and downstream generation. We see improvements to
+        inference-time scaling <span class="stat-chip">55.4% → 75.5%</span>
+        and find that we can do reinforcement learning with an
+        interaction-only reward model
         <span class="stat-chip">+50 Arena points</span>.
       </p>
       <p class="authors">
@@ -67,7 +69,6 @@
       </p>
       <nav class="paper-links" aria-label="Paper resources">
         <a href="https://arxiv.org/abs/2610.17895">arXiv</a>
-        <a href="assets/interaction-as-a-judge.pdf">Paper (PDF)</a>
         <a href="#citation">BibTeX</a>
         <a href="#datasets">Datasets</a>
       </nav>
@@ -78,7 +79,7 @@
     </div>
     <p class="marquee-caption">
       A computer-use judge exploring applications generated on Arena, from the
-      released ArenaPreferences traces. Hover to pause.
+      released ArenaWebdevPreferences traces. Hover to pause.
     </p>
 
     <main>
@@ -86,14 +87,15 @@
         <h2 id="datasets-title">Datasets</h2>
         <p class="section-lede">
           Along with <strong><span class="brand-accent">Interaction</span>-as-a-Judge</strong>,
-          we are open sourcing ArenaPreferences and ArenaCorrectness, two
-          agentic datasets with real user interactions, preferences, and
-          labels. We hope that by releasing this data we can help further
-          advance research into coding agents and computer-use agents.
+          we are open sourcing ArenaWebdevPreferences and
+          ArenaWebdevCorrectness, two agentic datasets with real user
+          interactions, preferences, and labels. We hope that by releasing
+          this data we can help further advance research into coding agents
+          and computer-use agents.
         </p>
 
         <div class="ds-block">
-          <p class="ds-name">ArenaPreferences<span class="ds-desc">: 6,858 application pairs across 7 different categories with real user prompts, agent traces, and human preference labels. Agents are tasked with determining user preference between the application pairs.</span> <span class="coming">not yet released</span></p>
+          <p class="ds-name"><a href="https://huggingface.co/datasets/lmarena-ai/arena-webdev-preferences">ArenaWebdevPreferences</a><span class="ds-desc">: 6,390 application pairs across 7 different categories with real user prompts, agent traces, and human preference labels. Agents are tasked with determining user preference between the application pairs.</span></p>
           <div class="tabs" id="battle-tabs" role="tablist"><button class="tab active" data-battle="gaming" role="tab">Gaming</button><button class="tab" data-battle="sim" role="tab">Simulations</button><button class="tab" data-battle="reference" role="tab">Reference design</button><button class="tab" data-battle="content" role="tab">Content creation</button><button class="tab" data-battle="data" role="tab">Data & analytics</button><button class="tab" data-battle="consumer" role="tab">Consumer apps</button><button class="tab" data-battle="brand" role="tab">Brand sites</button></div>
           <div class="battle" data-battle="gaming">
             <div class="prompt-card"><strong>User prompt</strong>create a 2d metroidvania browser game with a tutorial level. make sure the tutorial level can be completed and demonstrates basic moves, combat, and platforming with at l…</div>
@@ -110,10 +112,10 @@
             </div>
           </div>
           <div class="battle" data-battle="reference">
-            <div class="prompt-card"><strong>User prompt</strong>Create an interactive analytics dashboard for salesforce queue cases into power Bi interactive dashboard for realtime aimed at customers. Include KPI summary cards with t…</div>
+            <div class="prompt-card"><strong>User prompt</strong>Create a fully functional, interactive Web-based Operating System (Web OS). This is a test of your architectural intelligence, creativity, and coding logic. I am not pr…</div>
             <div class="pair-media">
-              <figure class="pair-item"><video src="assets/media/arena/cat-reference-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
-              <figure class="pair-item"><video src="assets/media/arena/cat-reference-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-reference-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-reference-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B <span class="ex-win">human preferred</span></figcaption></figure>
             </div>
           </div>
           <div class="battle" data-battle="content">
@@ -138,16 +140,16 @@
             </div>
           </div>
           <div class="battle" data-battle="brand">
-            <div class="prompt-card"><strong>User prompt</strong>Create a premium, modern, conversion-focused landing page for Ultra AI targeting People who use mainstream AI providers with subscriptions, with the goal of Converting th…</div>
+            <div class="prompt-card"><strong>User prompt</strong>create a landing page for a music website that charts the influences of music artists and allows users to explore the artists through pairs of music tracks that demonstrate that influence</div>
             <div class="pair-media">
-              <figure class="pair-item"><video src="assets/media/arena/cat-brand-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A <span class="ex-win">human preferred</span></figcaption></figure>
-              <figure class="pair-item"><video src="assets/media/arena/cat-brand-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-brand-a.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model A</figcaption></figure>
+              <figure class="pair-item"><video src="assets/media/arena/cat-brand-b.mp4" muted loop playsinline preload="metadata" autoplay></video><figcaption>Model B <span class="ex-win">human preferred</span></figcaption></figure>
             </div>
           </div>
         </div>
 
         <div class="ds-block">
-          <p class="ds-name">ArenaCorrectness<span class="ds-desc">: 222 game versions with 412 human-verified requirements. Requirements are labeled and associated with &ldquo;Broken&rdquo; or &ldquo;Working&rdquo; versions of games. Models are tasked with identifying whether requirements are broken or working.</span> <span class="coming">not yet released</span></p>
+          <p class="ds-name"><a href="https://huggingface.co/datasets/lmarena-ai/arena-webdev-correctness">ArenaWebdevCorrectness</a><span class="ds-desc">: 189 game versions with 362 human-verified requirements. Requirements are labeled and associated with &ldquo;Broken&rdquo; or &ldquo;Working&rdquo; versions of games. Models are tasked with identifying whether requirements are broken or working.</span></p>
           <div class="tabs" id="repair-tabs" role="tablist"></div>
           <div class="repair-grid tabbed" id="repair-grid"></div>
         </div>
@@ -344,6 +346,16 @@
             new data avenues where code is not readily available.
           </li>
         </ol>
+        <div class="talk-video">
+          <iframe
+            src="https://www.youtube.com/embed/lu--lrbznOk"
+            title="Letting AI Agents Play the Games They Evaluate — Interaction as a Judge"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
       </section>
 
       <section class="narrow reveal" aria-labelledby="ack-title">
@@ -359,9 +371,12 @@
           <div>
             <h2 id="citation-title">Citation</h2>
           </div>
-          <a href="assets/citation.bib" download>Download BibTeX</a>
+          <div class="citation-actions">
+            <a href="assets/citation.bib" download>Download BibTeX</a>
+            <button type="button" class="btn" id="copy-bibtex">Copy as BibTeX</button>
+          </div>
         </div>
-        <pre><code>@misc{chi2026interactionasajudge,
+        <pre><code id="bibtex">@misc{chi2026interactionasajudge,
   title         = {Interaction-as-a-Judge},
   author        = {Wayne Chi and I-Hung Hsu and Li Chen
                    and Wei-Lin Chiang and Ion Stoica
@@ -382,6 +397,6 @@
       Arena.
     </footer>
 
-    <script src="main.js?v=22"></script>
+    <script src="main.js?v=23"></script>
   </body>
 </html>

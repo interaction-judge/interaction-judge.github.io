@@ -473,14 +473,6 @@ figcaption { font-size: 13.5px; color: var(--ink-muted); margin-top: 10px; line-
 .repair-note { font-size: 13px; color: var(--ink-soft); padding: 12px 18px 4px; line-height: 1.5; }
 .repair-note .quote { color: var(--ink-muted); font-style: italic; }
 
-.repair-links {
-  display: flex;
-  gap: 16px;
-  padding: 10px 18px 16px;
-  font-family: var(--mono);
-  font-size: 12px;
-}
-
 /* ── Dataset showcases ──────────────────────────────────────── */
 .ds-block { margin-top: 40px; }
 .ds-name { font-size: 18px; font-weight: 600; color: var(--ink); margin: 0 0 14px; }
@@ -546,20 +538,8 @@ figcaption { font-size: 13.5px; color: var(--ink-muted); margin-top: 10px; line-
 .chart > svg { max-width: 760px; margin-left: auto; margin-right: auto; }
 .chart-duo .chart > svg { max-width: none; }
 
-.coming {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  background: var(--bg-panel);
-  color: var(--ink-muted);
-  border-radius: 4px;
-  padding: 2px 8px;
-  margin-left: 6px;
-}
-
 .citation-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.citation-actions { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 pre {
   background: var(--bg-alt);
   border: 1px solid var(--rule);
@@ -573,6 +553,16 @@ pre {
 .remarks-list { color: var(--ink-soft); padding-left: 22px; }
 .remarks-list li { margin: 10px 0; }
 .remarks-list strong { color: var(--ink); }
+
+.talk-video {
+  aspect-ratio: 16 / 9;
+  margin-top: 28px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+.talk-video iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 footer {
   border-top: 1px solid var(--rule);

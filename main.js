@@ -3,7 +3,7 @@
   "use strict";
 
   /* ── Hero marquee ─────────────────────────────────────────── */
-  // Clips composed from released ArenaPreferences trace frames (rev5-full).
+  // Clips composed from released ArenaWebdevPreferences trace frames (rev5-full).
   var MARQUEE_ROWS = [
     [
       { file: "neon-apex", label: "Synthwave racer [gaming]" },
@@ -252,10 +252,6 @@
         r.note +
         (r.quote ? ' <span class="quote">User: “' + r.quote + '”</span>' : "") +
         "</p>" +
-        '<div class="repair-links">' +
-        '<a href="assets/games/' + r.id + '-broken/index.html" target="_blank" rel="noopener">Play broken ↗</a>' +
-        '<a href="assets/games/' + r.id + '-fixed/index.html" target="_blank" rel="noopener">Play fixed ↗</a>' +
-        "</div>" +
         "</article>"
       );
     }).join("");
@@ -278,7 +274,7 @@
       chip.textContent = v === "broken" ? "requirement broken" : "user-confirmed fix";
     });
 
-    // ArenaPreferences battle tabs.
+    // ArenaWebdevPreferences battle tabs.
     var btabs = document.getElementById("battle-tabs");
     if (btabs) {
       var battles = document.querySelectorAll(".battle");
@@ -697,6 +693,32 @@
     else renderStrip(el, spec);
     if (!reducedMotion) chartIO.observe(el);
   });
+
+  /* ── Copy BibTeX ──────────────────────────────────────────── */
+  var copyBtn = document.getElementById("copy-bibtex");
+  var bibtex = document.getElementById("bibtex");
+  if (copyBtn && bibtex) {
+    copyBtn.addEventListener("click", function () {
+      function done() {
+        copyBtn.textContent = "Copied";
+        setTimeout(function () { copyBtn.textContent = "Copy as BibTeX"; }, 1600);
+      }
+      // Without clipboard access, leave the entry selected so Ctrl/Cmd+C works.
+      function fallback() {
+        var range = document.createRange();
+        range.selectNodeContents(bibtex);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try { if (document.execCommand("copy")) done(); } catch (e) { /* stay selected */ }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(bibtex.textContent).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
 
   /* ── Count-up stats ───────────────────────────────────────── */
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
